@@ -1,0 +1,62 @@
+name: Validate DRACO theme
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Parse scripts, compile HLSL and test installer
+        shell: powershell
+        run: .\tests\validate.ps1
+      - name: Validate setup safety and portability
+        shell: powershell
+        run: .\tests\validate-setup.ps1
+      - name: Validate quiet first-window startup
+        shell: powershell
+        run: .\tests\validate-startup.ps1
+      - name: Validate anonymous typing pulses and editor bindings
+        shell: powershell
+        run: .\tests\validate-input.ps1
+      - name: Enforce security architecture boundaries
+        shell: powershell
+        run: .\tests\validate-security-boundary.ps1
+      - name: Render green typing lightning with an alpha-zero background
+        shell: cmd
+        run: |
+          for /f "usebackq tokens=*" %%i in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath`) do call "%%i\VC\Auxiliary\Build\vcvars64.bat"
+          cl /nologo /EHsc /std:c++17 tests\validate-render.cpp /Fe:"%RUNNER_TEMP%\draco-render.exe" /Fo:"%RUNNER_TEMP%\draco-render.obj" /link d3d11.lib d3dcompiler.lib windowscodecs.lib ole32.lib
+          if errorlevel 1 exit /b 1
+          set DRACO_CAPTURE=1
+          if defined DRACO_CAPTURE (
+            "%RUNNER_TEMP%\draco-render.exe" shaders\draco-storm.hlsl assets\draco-storm-atlas.png "%RUNNER_TEMP%\draco-demo-800x450-20fps.rgba"
+          ) else (
+            "%RUNNER_TEMP%\draco-render.exe" shaders\draco-storm.hlsl assets\draco-storm-atlas.png
+          )
+          if errorlevel 1 exit /b 1
+          cl /nologo /EHsc /std:c++17 tests\validate-transport.cpp /Fe:"%RUNNER_TEMP%\draco-transport.exe" /Fo:"%RUNNER_TEMP%\draco-transport.obj"
+          if errorlevel 1 exit /b 1
+          "%RUNNER_TEMP%\draco-transport.exe" input\InputPulse.cs tests\transport-fixture.ps1
+      - name: Render the real two-line prompt at multiple widths
+        shell: powershell
+        run: |
+          $exe = Join-Path $env:RUNNER_TEMP "oh-my-posh.exe"
+          Invoke-WebRequest "https://github.com/JanDeDobbeleer/oh-my-posh/releases/download/v31.4.1/posh-windows-amd64.exe" -OutFile $exe -UseBasicParsing
+          if ((Get-FileHash $exe -Algorithm SHA256).Hash -ne "18aa1640bcbb2ad295ef99045c6862862d696c4303d81fe9a6c82706e079a971") { throw "Oh My Posh checksum mismatch" }
+          .\tests\validate-prompt.ps1 -Executable $exe
+      - name: Save production shader demo frames
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: draco-shader-demo
+          path: ${{ runner.temp }}/draco-demo-800x450-20fps.rgba
+          retention-days: 3
+          compression-level: 9
+          if-no-files-found: error

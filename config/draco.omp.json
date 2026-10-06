@@ -1,0 +1,133 @@
+{
+  "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+  "version": 4,
+  "final_space": true,
+  "console_title_template": "{{ .Folder }} | PowerShell",
+  "transient_prompt": {
+    "background": "transparent",
+    "foreground": "#67E8F9",
+    "template": "❯ "
+  },
+  "secondary_prompt": {
+    "background": "transparent",
+    "foreground": "#56627A",
+    "template": "· "
+  },
+  "blocks": [
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "overflow": "break",
+      "segments": [
+        {
+          "type": "session",
+          "style": "diamond",
+          "leading_diamond": "<#56627A>╭─</>",
+          "trailing_diamond": "",
+          "background": "#172740",
+          "foreground": "#67E8F9",
+          "template": " {{ .UserName | trunc 8 }} "
+        },
+        {
+          "type": "text",
+          "style": "plain",
+          "foreground": "#67E8F9",
+          "template": "{{ if .Env.VIRTUAL_ENV }}<#56627A>  </>PY {{ .Env.VIRTUAL_ENV | replace \"\\\\\" \"/\" | base | trunc 18 }}{{ else if .Env.CONDA_DEFAULT_ENV }}<#56627A>  </>PY {{ .Env.CONDA_DEFAULT_ENV | replace \"\\\\\" \"/\" | base | trunc 18 }}{{ end }}",
+          "min_width": 65
+        },
+        {
+          "type": "text",
+          "style": "plain",
+          "foreground": "#67E8F9",
+          "template": "{{ if .Env.VIRTUAL_ENV }}<#56627A>  </>PY {{ .Env.VIRTUAL_ENV | replace \"\\\\\" \"/\" | base | trunc 8 }}{{ else if .Env.CONDA_DEFAULT_ENV }}<#56627A>  </>PY {{ .Env.CONDA_DEFAULT_ENV | replace \"\\\\\" \"/\" | base | trunc 8 }}{{ end }}",
+          "max_width": 64
+        },
+        {
+          "type": "path",
+          "style": "plain",
+          "foreground": "#C4B5FD",
+          "template": "<#56627A>  </> {{ .Path }}",
+          "options": {
+            "style": "powerlevel",
+            "max_width": 24
+          },
+          "min_width": 80
+        },
+        {
+          "type": "path",
+          "style": "plain",
+          "foreground": "#C4B5FD",
+          "max_width": 79,
+          "template": "<#56627A>  </> {{ if or .Env.VIRTUAL_ENV .Env.CONDA_DEFAULT_ENV }}{{ .Path | trunc 12 }}{{ else }}{{ .Path | trunc 20 }}{{ end }}",
+          "options": {
+            "style": "folder"
+          },
+          "min_width": 65
+        },
+        {
+          "type": "path",
+          "style": "plain",
+          "foreground": "#C4B5FD",
+          "max_width": 64,
+          "template": "<#56627A>  </> {{ if or .Env.VIRTUAL_ENV .Env.CONDA_DEFAULT_ENV }}{{ .Path | trunc 4 }}{{ else }}{{ .Path | trunc 14 }}{{ end }}",
+          "options": {
+            "style": "folder"
+          }
+        },
+        {
+          "type": "git",
+          "style": "plain",
+          "foreground": "#7DF3D1",
+          "min_width": 100,
+          "template": "<#56627A>  </> {{ .HEAD | trunc 22 }}{{ if .Working.Changed }}<#F8D57E> ●</>{{ end }}",
+          "options": {
+            "branch_icon": "",
+            "fetch_status": true
+          }
+        },
+        {
+          "type": "root",
+          "style": "plain",
+          "foreground": "#F8D57E",
+          "template": "  ⚡ ADMIN",
+          "min_width": 120
+        },
+        {
+          "type": "time",
+          "style": "plain",
+          "foreground": "#56627A",
+          "min_width": 120,
+          "template": " ·  {{ .CurrentDate | date .Format }}",
+          "options": {
+            "time_format": "15:04"
+          }
+        }
+      ]
+    },
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "newline": true,
+      "segments": [
+        {
+          "type": "text",
+          "style": "plain",
+          "foreground": "#56627A",
+          "template": "╰─"
+        },
+        {
+          "type": "status",
+          "style": "plain",
+          "foreground": "#67E8F9",
+          "foreground_templates": [
+            "{{ if gt .Code 0 }}#FF4D6D{{ end }}"
+          ],
+          "template": "❯",
+          "options": {
+            "always_enabled": true
+          }
+        }
+      ]
+    }
+  ]
+}

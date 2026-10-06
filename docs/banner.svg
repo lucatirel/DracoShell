@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="340" viewBox="0 0 1200 340" role="img" aria-label="DRACO. Fire on Enter. Lightning as you type.">
+<defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#050816"/><stop offset="1" stop-color="#10152e"/></linearGradient><linearGradient id="fire"><stop stop-color="#ffd27d"/><stop offset=".32" stop-color="#ff642a"/><stop offset="1" stop-color="#ef174e"/></linearGradient></defs>
+<rect width="1200" height="340" rx="24" fill="url(#bg)"/>
+<path d="M856 35 819 94 857 105 812 173 848 191 778 284M1037 18 995 98 1030 112 978 171 1002 213 948 307" fill="none" stroke="#39bff7" stroke-width="3" opacity=".5"/>
+<path d="M811 173 763 160 728 215M978 171 1060 155 1089 222" fill="none" stroke="#9b71fc" stroke-width="2" opacity=".55"/>
+<path d="M763 241 C837 226 937 258 1047 108 C1002 221 935 286 763 255 C910 260 1000 209 1103 77 C1009 253 920 286 763 241Z" fill="url(#fire)" opacity=".9"/>
+<path d="M776 247 Q949 278 1059 135" fill="none" stroke="#ffd27d" stroke-width="3" opacity=".75"/>
+<text x="62" y="68" fill="#79daf4" font-family="monospace" font-size="16" letter-spacing="4">POWERSHELL / WINDOWS TERMINAL</text>
+<text x="56" y="181" fill="#e6edff" font-family="sans-serif" font-size="104" font-weight="800" letter-spacing="12">DRACO</text>
+<text x="62" y="237" fill="#c8d3ee" font-family="sans-serif" font-size="27">Fire on Enter. Lightning as you type.</text>
+<text x="62" y="289" fill="#8292b1" font-family="monospace" font-size="15">HLSL effects · Anonymous pulses · Responsive panes</text>
+</svg>
