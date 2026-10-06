@@ -1,52 +1,58 @@
-[![DracoShell Windows shader preview](docs/media/draco-demo.gif)](docs/media/draco-demo.mp4)
+<p align="center">
+  <a href="docs/media/draco-demo.mp4"><img src="docs/media/draco-demo.gif" alt="DracoShell: a cyan dragon with lightning, green typing effects and fire on Enter" width="800"></a>
+</p>
 
-# DracoShell
+<h1 align="center">DracoShell 🐉</h1>
+<p align="center"><strong>Your terminal. A dragon. A little lightning.</strong></p>
+<p align="center">An animated Windows Terminal theme for Windows PowerShell.<br>Lightning as you type. Fire when you hit Enter.</p>
 
-**Lightning as you type. Fire when you hit Enter.**
+<p align="center">
+  <a href="https://github.com/lucatirel/DracoShell/actions/workflows/validate.yml"><img src="https://github.com/lucatirel/DracoShell/actions/workflows/validate.yml/badge.svg?branch=main" alt="Windows checks"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-67e8f9?style=flat-square" alt="MIT license"></a>
+  <a href="docs/DEPENDENCIES.md"><img src="https://img.shields.io/badge/Windows-PowerShell_5.1-60a5fa?style=flat-square" alt="Windows PowerShell 5.1"></a>
+  <a href="docs/ARCHITECTURE.md"><img src="https://img.shields.io/badge/runtime-single_cached_atlas-a78bfa?style=flat-square" alt="Single cached graphics atlas"></a>
+</p>
 
-An animated Windows Terminal theme for Windows PowerShell. A cyan line-art dragon with subtle motion,
-crimson breath, electric storms and a compact prompt that keeps your work readable.
-Built by [Luca Tirel](https://github.com/lucatirel). Public edition with an original cyber dragon.
+<p align="center">
+  <a href="#install"><strong>Install</strong></a> ·
+  <a href="docs/media/draco-demo.mp4">Watch the demo</a> ·
+  <a href="#controls">Controls</a> ·
+  <a href="#spread-the-dragon">Spread the dragon</a>
+</p>
 
-[Install](#install) · [Controls](#controls) · [Compatibility](docs/DEPENDENCIES.md) ·
-[Watch the MP4](docs/media/draco-demo.mp4) · [Support the creator](#support-the-creator)
+A cyan outline dragon, a crimson eye and just enough movement to make your terminal
+feel alive. Ambient storms slip behind the wings or flash in front; typing adds
+thin green lightning, and Enter sends a short flame from the dragon's mouth.
+Your prompt stays readable, with directory, Git and Python context.
 
-[![Windows checks](https://github.com/lucatirel/DracoShell/actions/workflows/validate.yml/badge.svg?branch=main)](https://github.com/lucatirel/DracoShell/actions/workflows/validate.yml)
-[![Code: MIT](https://img.shields.io/badge/code-MIT-67e8f9)](LICENSE)
-[![Windows PowerShell 5.1](https://img.shields.io/badge/Windows_PowerShell-5.1-4d7cfe)](docs/DEPENDENCIES.md)
+<sub>The preview uses the actual shader rendered on Windows Direct3D WARP with simulated input. [Capture details](docs/media/README.md).</sub>
 
-*Preview rendered from the production HLSL on Windows Direct3D WARP, with
-simulated anonymous activity. Windows Direct3D checks passed for the source revision; see [capture provenance](docs/media/README.md).*
+## Meet your terminal dragon
 
-## Wake the dragon
-
-| Your terminal | DRACO's response |
+| You do this | Draco does this |
 | --- | --- |
-| Hit **Enter** | Red-orange breath propagates from the mouth, then burns out at the tips |
-| **Type** | Green lightning strikes across the pane |
-| Let it **idle** | Cyan, violet and magenta storms cross in front or disappear behind the dragon |
-| Watch **Draco** | Gentle breathing and small wing, head and tail movements |
-| **Resize or split** | The scene follows the pane, leaving room for the breath |
-| Get **work done** | Protected bright text and a two-line prompt with directory, Git and Python context |
+| **Type** | Thin green lightning flashes across the pane |
+| Hit **Enter** | A red-orange flame travels from the mouth and fades away |
+| Leave it **idle** | Gentle movement, a glowing eye and cyan/violet storms |
+| **Resize or split** | The scene adjusts to each pane |
+| Get **work done** | A compact two-line Oh My Posh prompt keeps the useful context close |
 
-## Built to stay lightweight
+## Small by design
 
 **One cached graphics atlas. No process launched per keystroke.**
 
-The shader reuses a single 3072 × 640 atlas: approximately **0.68 MiB on disk** and
-**7.5 MiB decoded** for that texture. Fire sampling runs inside the active breath
-region. There is no live blur, ray marching or fractal construction. Anonymous
-input notifications use a bounded mailbox and never wait for console output;
-the bridge timer stops when effects drain. Repeated empty Enter presses reuse
-cached prompt renders.
+The 3072 × 640 atlas is about **0.68 MiB on disk** and **7.5 MiB decoded**.
+Effects reuse that texture, notifications stay bounded, and the bridge timer
+stops when input effects finish. Choose full effects, ambient animation or a
+static background in the installer.
 
-These are architecture facts, not a claim about total Terminal memory or a GPU
-benchmark. [How it works](docs/ARCHITECTURE.md). A static mode is available too.
+The input bridge receives anonymous events, without reading characters or
+commands. No global keyboard hook, clipboard reads or input logging.
 
-The dragon moves through a small smooth deformation on the GPU. The crimson eye,
-blue contour discharges and breath origin follow the same pose. There is one body
-texture sample, five bounded arithmetic inversion steps and no sprite-frame
-sequence, animation worker or added runtime dependency. [Motion and limits](docs/ANIMATION.md).
+[Architecture](docs/ARCHITECTURE.md) · [Animation](docs/ANIMATION.md) ·
+[Security review](docs/SECURITY_REVIEW.md)
+
+<sub>Atlas sizes describe one texture, not total Terminal memory. Live GPU usage and input latency have not been benchmarked.</sub>
 
 ## Install
 
@@ -64,6 +70,9 @@ if ($LASTEXITCODE -ne 0) { throw "Installation failed" }
 missing Oh My Posh through winget and missing Meslo fonts through its official font
 installer. If Terminal is missing, setup installs it and asks you to open it once
 before rerunning. Existing dependencies are not silently upgraded.
+
+<details>
+<summary><strong>Requirements and what setup changes</strong></summary>
 
 Git missing? Run `winget install --exact --id Git.Git --source winget`, then open a
 new shell. A source archive also works. 
@@ -85,6 +94,8 @@ policy is not changed; see [setup and policy guidance](docs/DEPENDENCIES.md#powe
 [Full prerequisites and manual install commands](docs/DEPENDENCIES.md).
 No Python, CUDA, Visual Studio or discrete NVIDIA GPU is required at runtime.
 PowerShell 7, Linux/macOS and other terminal emulators are not validated targets.
+
+</details>
 
 <details>
 <summary><strong>Update, static mode and portable settings</strong></summary>
@@ -125,10 +136,15 @@ the path is recorded for reset.
 
 </details>
 
+<details>
+<summary><strong>First-window startup behavior</strong></summary>
+
 Plain taskbar launches get a one-time screen clear at the first prompt, after
 PowerShell prints its startup timing. This applies only to argument-free
 `powershell.exe` in Windows Terminal; startup errors prevent the clear. Normal
 tabs use `-NoLogo`. Scripted launches and later command output are preserved.
+
+</details>
 
 ## Controls
 
@@ -145,19 +161,7 @@ tabs use `-NoLogo`. Scripted launches and later command output are preserved.
 Vi mode, IME, paste, history recall and custom editing handlers do not produce a
 separate effect for every inserted character.
 
-## Anonymous effects
-
-The graphics bridge receives only argument-free `Click()` and `Fire()` events:
-**no characters or commands, no global keyboard hooks, no clipboard reads,
-no input logging and no network calls**. The normal shell/editor retain their
-own editing, history and prompt behavior.
-
-[Security policy](SECURITY.md) · [Source review](docs/SECURITY_REVIEW.md).
-Windows CI checks setup/reset safety, DLL integrity, nonblocking notifications,
-real Oh My Posh integration and Direct3D shader behavior across pane shapes.
-The review is scoped and does not certify zero vulnerabilities.
-
-## Remove / recover
+## Uninstall
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\uninstall.ps1
@@ -172,26 +176,31 @@ restore your installation backup for the exact previous appearance. Git, fonts a
 Oh My Posh stay installed. Keep recovery backups out of Git: they can contain
 private settings.
 
+## Spread the dragon
+
+If DracoShell makes your terminal a little more fun:
+
+- **Star the repo** so other terminal enthusiasts can find it.
+- **Share your setup** — a screenshot or a short Terminal recording goes a long way.
+- **Make it better** — [report a bug](https://github.com/lucatirel/DracoShell/issues/new/choose), suggest an idea or [send a contribution](CONTRIBUTING.md).
+
+[Project banner](docs/banner.svg) · [Animated preview](docs/media/draco-demo.gif) · [Video demo](docs/media/draco-demo.mp4)
+
 ## Support the creator
 
-Created by [Luca Tirel](https://github.com/lucatirel).
+Built by [Luca Tirel](https://github.com/lucatirel).
 
 <!-- CREATOR-SUPPORT:START -->
-If DRACO earns a place in your daily setup, give the repository a star, share a
-Terminal capture, or contribute an improvement. Screenshots and recordings make
-it easier to find the next visual or performance fix.
+Stars, shared setups and contributions help the dragon reach its next terminal.
+Creator support is optional; DracoShell has no paid features.
 <!-- CREATOR-SUPPORT:END -->
 
-[Contribute](CONTRIBUTING.md) · [Report a bug](https://github.com/lucatirel/DracoShell/issues) ·
 [Creator support setup](docs/SUPPORT.md)
 
 ## Credits and license
 
-Built with Windows Terminal, Oh My Posh, PSReadLine and Nerd Fonts.
-This edition uses the cyan line drawing selected and supplied by the project
-owner. See the asset notes for its preparation and runtime format.
+Built with **Windows Terminal**, **Oh My Posh**, **PSReadLine** and **Nerd Fonts**.
+The cyan dragon artwork was selected and supplied by the project owner.
 
-**Code, documentation and original project artwork: [MIT](LICENSE).**
-[Asset provenance and build process](assets/README.md) ·
-[Dependency licenses](THIRD_PARTY_NOTICES.md).
-
+Released under the **[MIT license](LICENSE)**.
+[Artwork and asset notes](assets/README.md) · [Dependency notices](THIRD_PARTY_NOTICES.md).

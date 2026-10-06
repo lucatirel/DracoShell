@@ -1,0 +1,16 @@
+name: Suggest an idea
+description: Give the dragon its next trick.
+title: "[Idea]: "
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would you like?
+      description: Describe the feature and how it would help your daily setup.
+    validations:
+      required: true
+  - type: textarea
+    id: example
+    attributes:
+      label: Example or reference
+      description: Optional sketches, screenshots or a concrete before/after example.

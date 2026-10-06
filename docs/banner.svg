@@ -1,12 +1,24 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="340" viewBox="0 0 1200 340" role="img" aria-label="DRACO. Fire on Enter. Lightning as you type.">
-<defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#050816"/><stop offset="1" stop-color="#10152e"/></linearGradient><linearGradient id="fire"><stop stop-color="#ffd27d"/><stop offset=".32" stop-color="#ff642a"/><stop offset="1" stop-color="#ef174e"/></linearGradient></defs>
-<rect width="1200" height="340" rx="24" fill="url(#bg)"/>
-<path d="M856 35 819 94 857 105 812 173 848 191 778 284M1037 18 995 98 1030 112 978 171 1002 213 948 307" fill="none" stroke="#39bff7" stroke-width="3" opacity=".5"/>
-<path d="M811 173 763 160 728 215M978 171 1060 155 1089 222" fill="none" stroke="#9b71fc" stroke-width="2" opacity=".55"/>
-<path d="M763 241 C837 226 937 258 1047 108 C1002 221 935 286 763 255 C910 260 1000 209 1103 77 C1009 253 920 286 763 241Z" fill="url(#fire)" opacity=".9"/>
-<path d="M776 247 Q949 278 1059 135" fill="none" stroke="#ffd27d" stroke-width="3" opacity=".75"/>
-<text x="62" y="68" fill="#79daf4" font-family="monospace" font-size="16" letter-spacing="4">POWERSHELL / WINDOWS TERMINAL</text>
-<text x="56" y="181" fill="#e6edff" font-family="sans-serif" font-size="104" font-weight="800" letter-spacing="12">DRACO</text>
-<text x="62" y="237" fill="#c8d3ee" font-family="sans-serif" font-size="27">Fire on Enter. Lightning as you type.</text>
-<text x="62" y="289" fill="#8292b1" font-family="monospace" font-size="15">HLSL effects · Anonymous pulses · Responsive panes</text>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="title desc">
+<title id="title">DracoShell — Your terminal. A dragon. A little lightning.</title>
+<desc id="desc">Dark cyan and violet banner with a terminal prompt and thin lightning strokes.</desc>
+<defs>
+<linearGradient id="bg" x2="1" y2="1"><stop stop-color="#070c16"/><stop offset="1" stop-color="#101b2b"/></linearGradient>
+<pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse"><path d="M48 0H0V48" fill="none" stroke="#67e8f9" stroke-opacity=".045"/></pattern>
+</defs>
+<rect width="1280" height="640" rx="28" fill="url(#bg)"/>
+<rect width="1280" height="640" rx="28" fill="url(#grid)"/>
+<rect x="1" y="1" width="1278" height="638" rx="28" fill="none" stroke="#67e8f9" stroke-opacity=".2"/>
+<path d="M72 82H205" stroke="#67e8f9" stroke-width="3"/>
+<text x="72" y="124" fill="#8da9bb" font-family="monospace" font-size="17" letter-spacing="3">WINDOWS TERMINAL / POWERSHELL</text>
+<text x="67" y="257" fill="#eaf7ff" font-family="sans-serif" font-size="100" font-weight="800" letter-spacing="-4">DracoShell</text>
+<text x="73" y="328" fill="#67e8f9" font-family="sans-serif" font-size="32">Your terminal. A dragon. A little lightning.</text>
+<text x="73" y="386" fill="#a9bdcf" font-family="sans-serif" font-size="25">Lightning as you type. Fire when you hit Enter.</text>
+<rect x="72" y="451" width="724" height="68" rx="12" fill="#050a11" stroke="#284154"/>
+<text x="97" y="495" fill="#67e8f9" font-family="monospace" font-size="23">&gt;_</text>
+<text x="155" y="495" fill="#d0e0ec" font-family="monospace" font-size="21">github.com/lucatirel/DracoShell</text>
+<text x="73" y="572" fill="#7d95a9" font-family="monospace" font-size="16">SUBTLE MOTION · REACTIVE EFFECTS · MIT LICENSE</text>
+<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+<path d="M1088 77 1035 170 1084 170 1002 287 1048 287 966 417" stroke="#67e8f9" stroke-width="3" opacity=".7"/>
+<path d="M1195 198 1147 281 1190 281 1114 405 1156 405 1068 557" stroke="#a78bfa" stroke-width="2" opacity=".65"/>
+<path d="M1002 287 939 269 909 313M1114 405 1183 426 1203 471" stroke="#67e8f9" stroke-width="1.5" opacity=".4"/>
+</g></svg>

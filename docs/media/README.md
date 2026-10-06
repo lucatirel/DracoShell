@@ -7,7 +7,7 @@ user commands or typing latency.
 
 - Source revision: `580a6ed4bf512d1e9400ea9d7f5b2fdce4a639ae`.
 - Source validation: Windows workflow `37481325434` in the private development repository (2026-10-06).
-- Public validation: this repository runs the same Windows checks on every push to `main`.
+- Public validation: [Windows checks passed](https://github.com/lucatirel/DracoShell/actions/runs/37489460291) for `05f67e176e5e929a09325d1b6e2bf5a2a40c2021`. This repository runs the same checks on every push to `main`.
 - Capture artifact: `draco-shader-demo`, ID `11421965211`.
 - Capture: 800 x 450 RGBA, 120 frames at 20 fps.
 - MP4: full-resolution H.264. GIF: 640 pixels wide, 12 fps, 64-color palette.

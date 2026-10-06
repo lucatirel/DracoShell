@@ -1,0 +1,30 @@
+name: Report a bug
+description: Help make the dragon behave in your terminal.
+title: "[Bug]: "
+body:
+  - type: textarea
+    id: behavior
+    attributes:
+      label: What happened?
+      description: Describe what you expected and what you saw instead.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: How can we reproduce it?
+      description: Include the steps and the install mode you used.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Your setup
+      description: Windows, Terminal, PowerShell, Oh My Posh and PSReadLine versions, plus pane size if relevant.
+    validations:
+      required: true
+  - type: textarea
+    id: visuals
+    attributes:
+      label: Screenshot or short recording
+      description: Optional, especially useful for lightning, fire or layout issues.
