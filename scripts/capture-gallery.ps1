@@ -110,7 +110,7 @@ try {
         Assert-DracoPresetAssets $Preset
         $Path=Join-Path $Output ("terminal-"+$Name+".png")
         & $Renderer $Preset.shaderPath $Preset.imagePath $Terminal $Path ([int][bool]$Preset.inputEffects)
-        if ($LASTEXITCODE -ne 0) { throw "Capture failed: $Name" }
+        if ($LASTEXITCODE -ne 0) { throw "Capture failed: $Name (native exit $LASTEXITCODE)" }
         $Check=[System.Drawing.Bitmap]::FromFile($Path)
         try { if ($Check.Width -ne 1280 -or $Check.Height -ne 720) { throw 'Bad gallery dimensions' } }
         finally { $Check.Dispose() }

@@ -108,8 +108,9 @@ int wmain(int argc,wchar_t** argv) {
         }
         if(text<1000||art<1000)throw std::runtime_error("Gallery lost prompt text or visible artwork");
         save(factory.Get(),argv[4],w,h,pixels);
-        std::cout<<"Production shader terminal preview: "<<w<<"x"<<h<<"\n";
-        CoUninitialize();return 0;
+        std::cout<<"Production shader terminal preview: "<<w<<"x"<<h<<std::endl;
+        // Keep COM alive until local WIC smart pointers have released their objects.
+        return 0;
     }catch(const std::exception& e){std::cerr<<e.what()<<"\n";return 1;}
 }
 
