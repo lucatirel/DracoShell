@@ -41,9 +41,14 @@ void save(IWICImagingFactory* factory,const wchar_t* path,UINT w,UINT h,std::vec
     check(encoder->CreateNewFrame(&frame,&props));check(frame->Initialize(props.Get()));
     check(frame->SetSize(w,h));WICPixelFormatGUID format=GUID_WICPixelFormat32bppRGBA;
     check(frame->SetPixelFormat(&format));
-    if(format!=GUID_WICPixelFormat32bppRGBA) throw std::runtime_error("PNG encoder changed pixel format");
     for(auto& p:pixels) p.a=255;
-    check(frame->WritePixels(h,w*4,(UINT)pixels.size()*4,(BYTE*)pixels.data()));
+    // WIC PNG negotiates its native channel order (commonly BGRA).
+    ComPtr<IWICBitmap> bitmap;
+    check(factory->CreateBitmapFromMemory(w,h,GUID_WICPixelFormat32bppRGBA,w*4,
+        (UINT)pixels.size()*4,(BYTE*)pixels.data(),&bitmap));
+    ComPtr<IWICFormatConverter> converter;check(factory->CreateFormatConverter(&converter));
+    check(converter->Initialize(bitmap.Get(),format,WICBitmapDitherTypeNone,nullptr,0,WICBitmapPaletteTypeCustom));
+    check(frame->WriteSource(converter.Get(),nullptr));
     check(frame->Commit());check(encoder->Commit());
 }
 int wmain(int argc,wchar_t** argv) {
