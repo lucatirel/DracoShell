@@ -57,9 +57,12 @@ namespace Draco
         private static int transport, outputError;
         private static long received, emitted, fires;
         private static long fireAt = -1;
+        private static long flightAt = -1, requestedFlightAt = -1;
         private static bool typingActive;
         private static int lastFireStage = -1;
+        private static int lastFlightStage = -1;
         public const int FireMilliseconds = 900;
+        public const int FlightMilliseconds = 5500;
         // Tests in the same compiled assembly can observe boolean output events.
         // This seam is internal and never configured by the production profile.
         internal static Action<bool> OutputObserver { get; set; }
@@ -118,15 +121,24 @@ namespace Draco
             Interlocked.Exchange(ref requestedFireAt, clock.ElapsedMilliseconds);
             Wake();
         }
+        // One replaceable animation timestamp; no queued flights or input data.
+        public static void Flight()
+        {
+            if (!enabled) return;
+            Interlocked.Exchange(ref requestedFlightAt, clock.ElapsedMilliseconds);
+            Wake();
+        }
         private static bool RequestsPending()
         {
             return Interlocked.CompareExchange(ref clickRequests, 0, 0) > 0 ||
-                Interlocked.Read(ref requestedFireAt) >= 0;
+                Interlocked.Read(ref requestedFireAt) >= 0 ||
+                Interlocked.Read(ref requestedFlightAt) >= 0;
         }
         private static void ClearRequests()
         {
             Interlocked.Exchange(ref clickRequests, 0);
             Interlocked.Exchange(ref requestedFireAt, -1);
+            Interlocked.Exchange(ref requestedFlightAt, -1);
         }
         private static void Wake()
         {
@@ -167,16 +179,28 @@ namespace Draco
         {
             return fireAt < 0 ? -1 : FlameStage(clock.ElapsedMilliseconds - fireAt);
         }
+        public static int FlightStage(long elapsed)
+        {
+            return elapsed < 0 || elapsed >= FlightMilliseconds ? -1 : (int)(elapsed / 50);
+        }
+        private static int CurrentFlightStage()
+        {
+            return flightAt < 0 ? -1 : FlightStage(clock.ElapsedMilliseconds - flightAt);
+        }
         private static void WriteSignal(bool on)
         {
             typingActive = on;
             int stage = CurrentFireStage();
+            int flight = CurrentFlightStage();
             lastFireStage = stage;
+            lastFlightStage = flight;
             if (OutputObserver != null) { OutputObserver(on); return; }
             // Same opaque control cell as the working green-bolt bridge.
             // G encodes activity, B encodes anonymous flame age, no input data.
-            if (stage >= 0)
-                WriteSequence("\u001b[1;1;1;1;48;2;5;" + (on ? "56" : "8") + ";" + (80 + stage) + "$r");
+            // R independently encodes the 5.5 s flight, G typing, B fire.
+            if (stage >= 0 || flight >= 0)
+                WriteSequence("\u001b[1;1;1;1;48;2;" + (flight >= 0 ? 128 + flight : 5) +
+                    ";" + (on ? "56" : "8") + ";" + (stage >= 0 ? 80 + stage : 22) + "$r");
             else WriteSequence(on ? OnSequence : OffSequence);
         }
         private static void WriteSequence(string sequence)
@@ -206,6 +230,8 @@ namespace Draco
                     for (int i = 0; i < clicks; i++) gate.Press();
                     long requestedFire = Interlocked.Exchange(ref requestedFireAt, -1);
                     if (requestedFire >= 0) fireAt = requestedFire;
+                    long requestedFlight = Interlocked.Exchange(ref requestedFlightAt, -1);
+                    if (requestedFlight >= 0) flightAt = requestedFlight;
                     int signal = gate.Advance(clock.ElapsedMilliseconds);
                     try
                     {
@@ -214,10 +240,12 @@ namespace Draco
                             WriteSignal(signal == 1);
                             if (signal == 1) emitted++;
                         }
-                        else if (CurrentFireStage() != lastFireStage) WriteSignal(typingActive);
+                        else if (CurrentFireStage() != lastFireStage ||
+                            CurrentFlightStage() != lastFlightStage) WriteSignal(typingActive);
                     }
                     catch { enabled = false; outputError = -1; }
-                    if (!enabled || (!gate.Pending && CurrentFireStage() < 0 && !RequestsPending()))
+                    if (!enabled || (!gate.Pending && CurrentFireStage() < 0 &&
+                        CurrentFlightStage() < 0 && !RequestsPending()))
                     {
                         timer.Change(Timeout.Infinite, Timeout.Infinite);
                         running = false;
@@ -238,6 +266,7 @@ namespace Draco
                 ClearRequests();
                 gate = new PulseGate();
                 fireAt = -1;
+                flightAt = -1;
                 if (rawBackground) WriteSequence(DiagnosticSequence);
                 else WriteSignal(true);
             }
@@ -252,6 +281,7 @@ namespace Draco
                 ClearRequests();
                 gate = new PulseGate();
                 fireAt = -1;
+                flightAt = -1;
                 Interlocked.Exchange(ref received, 0);
                 Interlocked.Exchange(ref fires, 0);
                 emitted = 0;
@@ -267,6 +297,7 @@ namespace Draco
                 ClearRequests();
                 running = false;
                 fireAt = -1;
+                flightAt = -1;
                 if (timer != null) { timer.Dispose(); timer = null; }
                 try { WriteSignal(false); } catch { }
             }

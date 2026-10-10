@@ -146,6 +146,12 @@ function Test-DracoFireEffects {
     Get-DracoTypingStatus
 }
 
+function Test-DracoFlight {
+    if (-not $DracoInputConfig.flight) { throw "Flight requires the armored preset with motion and input effects enabled. Reinstall and open a new tab." }
+    Enable-DracoTypingEffects
+    [Draco.InputPulse]::Flight()
+}
+
 function Test-DracoTypingEffects {
     param([switch]$Transport, [ValidateRange(1, 10)][int]$Seconds = 4)
     Enable-DracoTypingEffects
@@ -195,10 +201,18 @@ if (Test-Path $DracoInputConfigPath) {
             if (-not [Draco.InputPulse]::Enabled -or @($script:DracoInputChords).Count -lt 26) {
                 throw 'No insertion bindings enabled (vi mode or incompatible editor)'
             }
+            # A monotonic, anonymous output marker drives the entrance once per tab.
+            # Shader Time can be signed or represent uptime, so it is not an intro clock.
+            if ($DracoInputConfig.flight -and $env:WT_SESSION -and
+                $Host.Name -eq 'ConsoleHost' -and -not $script:DracoFlightStarted) {
+                [Draco.InputPulse]::Flight()
+                $script:DracoFlightStarted = $true
+            }
         }
     } catch {
         # Quiet startup; diagnostic details remain available on explicit request.
         $script:DracoInputStartupError = $_.Exception.Message
     }
 }
+
 

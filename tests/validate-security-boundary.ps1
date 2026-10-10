@@ -9,6 +9,7 @@ $PowerShellRuntimeFiles = @(
     'install.ps1',
     'uninstall.ps1',
     'scripts\Draco.Setup.ps1',
+    'scripts\Draco.Presets.ps1',
     'profile\draco-profile.ps1',
     'profile\draco-input.ps1'
 )
@@ -162,4 +163,5 @@ Write-Host '  - one validated Oh My Posh evaluation boundary'
 Write-Host '  - output-only anonymous input bridge'
 Write-Host '  - no extra persistence mechanism'
 Write-Host '  - emergency reset remains local and -NoProfile'
+
 

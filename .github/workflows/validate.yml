@@ -9,17 +9,24 @@ permissions:
 jobs:
   windows:
     runs-on: windows-latest
-    timeout-minutes: 5
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false
+          fetch-depth: 0
       - name: Parse scripts, compile HLSL and test installer
         shell: powershell
         run: .\tests\validate.ps1
       - name: Validate setup safety and portability
         shell: powershell
         run: .\tests\validate-setup.ps1
+      - name: Validate all matching dragon packs and installer transitions
+        shell: powershell
+        run: .\tests\validate-presets.ps1
+      - name: Enforce public artwork and history boundary
+        shell: powershell
+        run: .\tests\validate-publication.ps1
       - name: Validate quiet first-window startup
         shell: powershell
         run: .\tests\validate-startup.ps1
@@ -35,8 +42,7 @@ jobs:
           for /f "usebackq tokens=*" %%i in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath`) do call "%%i\VC\Auxiliary\Build\vcvars64.bat"
           cl /nologo /EHsc /std:c++17 tests\validate-render.cpp /Fe:"%RUNNER_TEMP%\draco-render.exe" /Fo:"%RUNNER_TEMP%\draco-render.obj" /link d3d11.lib d3dcompiler.lib windowscodecs.lib ole32.lib
           if errorlevel 1 exit /b 1
-          set DRACO_CAPTURE=1
-          if defined DRACO_CAPTURE (
+          if "%GITHUB_EVENT_NAME%"=="workflow_dispatch" (
             "%RUNNER_TEMP%\draco-render.exe" shaders\draco-storm.hlsl assets\draco-storm-atlas.png "%RUNNER_TEMP%\draco-demo-800x450-20fps.rgba"
           ) else (
             "%RUNNER_TEMP%\draco-render.exe" shaders\draco-storm.hlsl assets\draco-storm-atlas.png
@@ -53,6 +59,7 @@ jobs:
           if ((Get-FileHash $exe -Algorithm SHA256).Hash -ne "18aa1640bcbb2ad295ef99045c6862862d696c4303d81fe9a6c82706e079a971") { throw "Oh My Posh checksum mismatch" }
           .\tests\validate-prompt.ps1 -Executable $exe
       - name: Save production shader demo frames
+        if: github.event_name == 'workflow_dispatch'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: draco-shader-demo
@@ -60,3 +67,26 @@ jobs:
           retention-days: 3
           compression-level: 9
           if-no-files-found: error
+
+
+  preset-render:
+    runs-on: windows-latest
+    timeout-minutes: 8
+    strategy:
+      fail-fast: false
+      matrix:
+        dragon: [public, subtle, armored]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Render the selected authored pack and its motion opt-out
+        shell: cmd
+        env:
+          DRACO_PRESET: ${{ matrix.dragon }}
+        run: |
+          for /f "usebackq tokens=*" %%i in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath`) do call "%%i\VC\Auxiliary\Build\vcvars64.bat"
+          cl /nologo /EHsc /std:c++17 presets\%DRACO_PRESET%\tests\validate-render.cpp /Fe:"%RUNNER_TEMP%\draco-preset.exe" /Fo:"%RUNNER_TEMP%\draco-preset.obj" /link d3d11.lib d3dcompiler.lib windowscodecs.lib ole32.lib
+          if errorlevel 1 exit /b 1
+          "%RUNNER_TEMP%\draco-preset.exe" presets\%DRACO_PRESET%\shaders\draco-storm.hlsl presets\%DRACO_PRESET%\assets\draco-storm-atlas.png
+          if errorlevel 1 exit /b 1

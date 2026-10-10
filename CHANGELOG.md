@@ -1,11 +1,20 @@
 # Changelog
 
+## Configurable public presets — 2026-10-10
+
+- Add seven graphics presets through `-Dragon` and `-ListDragons`, with `lineart` as the public default.
+- Share the safe installer, prompt and bounded anonymous input runtime; retain `-Static`, `-NoTypingEffects` and `-NoDragonMotion`.
+- Restore public, subtle and armored packs with their matching assets, shaders and render checks; enable guarded armored flight.
+- Adapt the three historical ambient shaders to the public cyan drawing, excluding manufacturer artwork and private Git history.
+- Test every preset installation and transitions, plus public asset/history boundaries.
+
+
 ## Cyan line-art edition — 2026-10-06
 
 - Use the owner-selected cyan outline dragon and preserve its proportions.
 - Reduce body motion and keep the red eye, green typing lightning and Enter fire.
 - Re-anchor the fire and electrical routes to the new artwork.
-- Preserve static, subtle and flight variants on their existing branches.
+- Preserve static, subtle and flight variants (now selected through the preset catalog).
 
 
 ## Unreleased
@@ -63,5 +72,6 @@
   prompt dependency fails; uninstall restores active bindings and preserves valid
   settings on write failures.
 - Code license, artwork attribution, security review and publication checklist.
+
 
 

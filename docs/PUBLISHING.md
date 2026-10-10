@@ -1,19 +1,27 @@
-# Public-edition publishing
+# Publishing DracoShell
 
-This standalone edition contains the selected cyan outline dragon, subtle motion,
-narrow green typing lightning and foreground/background storm layers. It is a
-snapshot of development revision `53208816a2cc6687e1b498de15a2d40fd96ddc3b`,
-prepared without development Git history. The public repository uses `main`.
+DracoShell keeps independent public Git history. Its default is cyan `lineart`;
+the catalog includes public, subtle, armored and three historical ambient effects
+adapted to that public drawing. Manufacturer artwork, derived crops/icons/atlases
+and private demo media are excluded.
 
-CI validates assets, setup, startup, input boundaries, prompt and the actual
-production shader on Windows. The README demonstration is an offscreen Direct3D
-capture with simulated anonymous activity; it does not measure live input latency.
+Transfer reviewed code and permitted packs as file-level commits based on public
+main. Never merge or push private branches, tags or commit ancestry. Preserve public
+licenses, issue templates, funding settings and demo media. Private branch snapshots,
+the archive helper and recovery backups do not belong here.
 
-Before tagging a release, test install → install again → uninstall → close all
-Terminal windows → reopen → reinstall on Windows. Backups stay private and the
-uninstaller preserves only the inactive graphics cache for safe asynchronous
-Terminal reloads. Record Terminal, PowerShell, editor and prompt versions.
+Before release:
 
-Run `Publish-To-GitHub.ps1` from a clean checkout for a read-only publishing
-preflight. It does not create repositories or push changes. Optional creator
-funding is configured using `scripts/Set-CreatorSupport.ps1`.
+1. Run Windows checks for every preset, shared setup/input/prompt/reset and WARP
+   rendering. `tests/validate-publication.ps1` rejects known excluded artwork and
+   private source commits in tracked files and reachable history.
+2. Verify install → reinstall → switch preset → uninstall → close all Terminal
+   windows → reopen → reinstall on Windows. Record dependency/Terminal versions.
+3. Inspect all new artwork and history. Known-hash checks cannot establish rights
+   for new or altered images. Keep personal settings and recordings private until reviewed.
+4. Keep the README demo identified as a production-shader capture with simulated activity.
+5. Tag the tested public commit and write release notes from CHANGELOG.
+
+`Publish-To-GitHub.ps1` is a read-only clean-checkout preflight. Optional creator
+support uses `scripts/Set-CreatorSupport.ps1`; preserve configured destinations.
+

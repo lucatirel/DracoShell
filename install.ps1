@@ -1,7 +1,7 @@
 #requires -Version 5.1
 param([switch]$Static, [switch]$NoTypingEffects, [switch]$NoDependencyInstall,
-    [switch]$NoDragonMotion,
-    [string]$SettingsPath, [string]$FontFace)
+    [string]$SettingsPath, [string]$FontFace,
+    [string]$Dragon = 'lineart', [switch]$NoDragonMotion, [switch]$ListDragons)
 $ErrorActionPreference = "Stop"
 
 Write-Host ""
@@ -9,7 +9,17 @@ Write-Host "=== DRACO TERMINAL INSTALLER ===" -ForegroundColor Cyan
 
 $RepoRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
 . (Join-Path $RepoRoot 'scripts\Draco.Setup.ps1')
+. (Join-Path $RepoRoot 'scripts\Draco.Presets.ps1')
+if ($ListDragons) {
+    $Catalog = Get-Content (Join-Path $RepoRoot 'config/dragons.json') -Raw | ConvertFrom-Json
+    $Catalog.presets.PSObject.Properties | ForEach-Object {
+        [PSCustomObject]@{ Dragon=$_.Name; Description=$_.Value.label; Default=($_.Name -eq $Catalog.default) }
+    } | Format-Table -AutoSize
+    return
+}
 Assert-DracoHost
+$Preset = Get-DracoPreset $RepoRoot $Dragon
+$InputEnabled = -not $Static -and -not $NoTypingEffects -and $Preset.inputEffects
 $Root = Join-Path $env:USERPROFILE ".draco-terminal"
 $Assets = Join-Path $Root "assets"
 $Shaders = Join-Path $Root "shaders"
@@ -27,34 +37,8 @@ $PreviousState = if (Test-Path -LiteralPath $StatePath) {
     Get-Content -LiteralPath $StatePath -Raw | ConvertFrom-Json
 } else { $null }
 
-# Verify bytes before changing settings. PNGs must never be transported as UTF-8.
-$Manifest = Get-Content (Join-Path $RepoRoot "assets\manifest.json") -Raw | ConvertFrom-Json
-$ExpectedAssets = @('assets/draco-cyber-blue.png', 'assets/draco-icon.png',
-    'assets/draco-storm-atlas.png', 'assets/draco-flame-v1.png')
-if (@($Manifest.files.PSObject.Properties).Count -ne $ExpectedAssets.Count) { throw 'Invalid asset manifest' }
-foreach ($Entry in $Manifest.files.PSObject.Properties) {
-    if ($Entry.Name -notin $ExpectedAssets -or $Entry.Value -notmatch '^[a-fA-F0-9]{64}$') {
-        throw 'Invalid asset manifest entry'
-    }
-    $AssetPath = Join-Path $RepoRoot $Entry.Name
-    if (-not (Test-Path $AssetPath) -or
-        (Get-FileHash $AssetPath -Algorithm SHA256).Hash -ne $Entry.Value) {
-        throw "DRACO asset is missing or damaged: $($Entry.Name). Run git pull again."
-    }
-}
-Add-Type -AssemblyName System.Drawing
-foreach ($AssetName in @("draco-cyber-blue.png", "draco-icon.png")) {
-    $Bitmap = [System.Drawing.Bitmap]::FromFile((Join-Path $RepoRoot "assets\$AssetName"))
-    try {
-        if ($Bitmap.Width -ne $Bitmap.Height -or $Bitmap.Width -lt 128) {
-            throw "Invalid DRACO image dimensions: $AssetName"
-        }
-    } finally { $Bitmap.Dispose() }
-}
-$Bitmap = [System.Drawing.Bitmap]::FromFile((Join-Path $RepoRoot "assets\draco-storm-atlas.png"))
-try {
-    if ($Bitmap.Width -ne 3072 -or $Bitmap.Height -ne 640) { throw "Invalid DRACO storm atlas dimensions" }
-} finally { $Bitmap.Dispose() }
+# Verify the selected matching graphics pack before changing active files.
+Assert-DracoPresetAssets $Preset
 
 # Resolve and parse all active settings BEFORE installing or changing profiles.
 $SettingsPath = Resolve-DracoSettingsPath $SettingsPath $PreviousState.settingsPath
@@ -153,18 +137,30 @@ foreach ($Name in @('draco.omp.json', 'draco-profile.ps1', 'draco-input.ps1', 'i
 }
 Copy-Item (Join-Path $RepoRoot "config\draco.omp.json") (Join-Path $Root "draco.omp.json") -Force
 Copy-Item (Join-Path $RepoRoot "profile\draco-profile.ps1") (Join-Path $Root "draco-profile.ps1") -Force
-Copy-Item (Join-Path $RepoRoot "assets\draco-cyber-blue.png") (Join-Path $Assets "draco-cyber-blue.png") -Force
-Copy-Item (Join-Path $RepoRoot "assets\draco-icon.png") (Join-Path $Assets "draco-icon.png") -Force
-$AtlasTag = (Get-FileHash (Join-Path $RepoRoot "assets\draco-storm-atlas.png") -Algorithm SHA256).Hash.Substring(0, 12).ToLowerInvariant()
-$AtlasFile = Join-Path $Assets "draco-storm-atlas-$AtlasTag.png"
+# Keep the default runtime paths compatible; variants use content-addressed files.
+$BodyExtension = [IO.Path]::GetExtension($Preset.staticImagePath)
+$BodyTag = (Get-FileHash $Preset.staticImagePath -Algorithm SHA256).Hash.Substring(0, 12).ToLowerInvariant()
+$IconExtension = [IO.Path]::GetExtension($Preset.iconPath)
+$IconTag = (Get-FileHash $Preset.iconPath -Algorithm SHA256).Hash.Substring(0, 12).ToLowerInvariant()
+$BodyName = if ($Dragon -eq 'lineart') { 'draco-cyber-blue.png' } else { "draco-$Dragon-body-$BodyTag$BodyExtension" }
+$IconName = if ($Dragon -eq 'lineart') { 'draco-icon.png' } else { "draco-$Dragon-icon-$IconTag$IconExtension" }
+$BodyFile = Join-Path $Assets $BodyName
+$IconFile = Join-Path $Assets $IconName
+Assert-DracoRuntimePath $Root $BodyFile
+Assert-DracoRuntimePath $Root $IconFile
+Copy-Item -LiteralPath $Preset.staticImagePath -Destination $BodyFile -Force
+Copy-Item -LiteralPath $Preset.iconPath -Destination $IconFile -Force
+$AtlasTag = (Get-FileHash $Preset.imagePath -Algorithm SHA256).Hash.Substring(0, 12).ToLowerInvariant()
+$ImageExtension = [IO.Path]::GetExtension($Preset.imagePath)
+$AtlasFile = Join-Path $Assets "draco-storm-atlas-$AtlasTag$ImageExtension"
 Assert-DracoRuntimePath $Root $AtlasFile
-Copy-Item (Join-Path $RepoRoot "assets\draco-storm-atlas.png") $AtlasFile -Force
+Copy-Item -LiteralPath $Preset.imagePath -Destination $AtlasFile -Force
 # Compile the tiny pulse helper once at installation, not on every tab/key.
 $InputSource = Join-Path $RepoRoot 'input\InputPulse.cs'
 $InputTag = (Get-FileHash $InputSource -Algorithm SHA256).Hash.Substring(0, 12).ToLowerInvariant()
 $InputAssembly = "draco-input-$InputTag.dll"
 $InputAssemblyPath = Join-Path $Root $InputAssembly
-if (-not $Static -and -not $NoTypingEffects) {
+if ($InputEnabled) {
     # Rebuild from reviewed source on every install. Never bless a stale/corrupted
     # DLL merely by copying its current disk hash into the new trust configuration.
     $TempAssembly = Join-Path $Root ('draco-input-build-' + [Guid]::NewGuid().ToString('N') + '.dll')
@@ -187,22 +183,19 @@ if (-not $Static -and -not $NoTypingEffects) {
     }
 }
 Copy-Item (Join-Path $RepoRoot 'profile\draco-input.ps1') (Join-Path $Root 'draco-input.ps1') -Force
-$InputConfig = @{ enabled = (-not $Static -and -not $NoTypingEffects); assembly = $InputAssembly;
+$InputConfig = @{ enabled = $InputEnabled;
+    flight = ($InputEnabled -and $Preset.flight -and -not $NoDragonMotion); assembly = $InputAssembly;
     assemblyHash = if (Test-Path -LiteralPath $InputAssemblyPath) { (Get-FileHash $InputAssemblyPath -Algorithm SHA256).Hash } else { $null } }
 Write-DracoAtomicText (Join-Path $Root 'input-effects.json') ($InputConfig | ConvertTo-Json) $Utf8NoBom
 # A new filename forces Terminal to reload both the shader and image after updates.
-$ShaderSource = [IO.File]::ReadAllText((Join-Path $RepoRoot "shaders\draco-storm.hlsl"))
-if ($NoDragonMotion) {
-    $ShaderSource = $ShaderSource.Replace('#define DRACO_MOTION 1.0f', '#define DRACO_MOTION 0.0f')
-}
+$ShaderText = Get-DracoPresetShader $Preset -NoDragonMotion:$NoDragonMotion
 $ShaderHasher = [Security.Cryptography.SHA256]::Create()
-try {
-    $ShaderHash = $ShaderHasher.ComputeHash($Utf8NoBom.GetBytes($ShaderSource))
-    $ShaderTag = ([BitConverter]::ToString($ShaderHash) -replace '-', '').Substring(0, 12).ToLowerInvariant()
-} finally { $ShaderHasher.Dispose() }
+try { $ShaderHash = $ShaderHasher.ComputeHash($Utf8NoBom.GetBytes($ShaderText)) }
+finally { $ShaderHasher.Dispose() }
+$ShaderTag = ([BitConverter]::ToString($ShaderHash) -replace '-', '').Substring(0, 12).ToLowerInvariant()
 $ShaderFile = Join-Path $Shaders "draco-storm-$ShaderTag.hlsl"
 Assert-DracoRuntimePath $Root $ShaderFile
-Write-DracoAtomicText $ShaderFile $ShaderSource $Utf8NoBom
+Write-DracoAtomicText $ShaderFile $ShaderText $Utf8NoBom
 
 # Windows PowerShell 5.1 likes a BOM for Unicode .ps1 files.
 $ProfileText = [System.IO.File]::ReadAllText((Join-Path $Root "draco-profile.ps1"))
@@ -257,9 +250,9 @@ Set-Prop $TerminalProfile "backgroundImage" "none"
 Set-Prop $TerminalProfile "backgroundImageOpacity" 0.30
 Set-Prop $TerminalProfile "backgroundImageStretchMode" "uniform"
 Set-Prop $TerminalProfile "backgroundImageAlignment" "right"
-Set-Prop $TerminalProfile "icon" (Join-Path $Assets "draco-icon.png")
+Set-Prop $TerminalProfile "icon" $IconFile
 if ($Static) {
-    Set-Prop $TerminalProfile "backgroundImage" (Join-Path $Assets "draco-cyber-blue.png")
+    Set-Prop $TerminalProfile "backgroundImage" $BodyFile
     Set-Prop $TerminalProfile "experimental.pixelShaderPath" ""
     Set-Prop $TerminalProfile "experimental.pixelShaderImagePath" ""
 } else {
@@ -314,14 +307,16 @@ catch {
     }
     throw
 }
-$InstallState = @{ settingsPath=$SettingsPath; noLogoAdded=$NoLogoAdded; fontFace=$FontFace }
+$InstallState = @{ settingsPath=$SettingsPath; noLogoAdded=$NoLogoAdded; fontFace=$FontFace; dragon=$Dragon; noDragonMotion=[bool]$NoDragonMotion }
 Write-DracoAtomicText $StatePath ($InstallState | ConvertTo-Json) $Utf8NoBom
 
 Write-Host ""
-Write-Host "DRACO installed." -ForegroundColor Green
+Write-Host "DRACO installed: $Dragon." -ForegroundColor Green
 Write-Host "Open a NEW Windows PowerShell tab. Existing download tabs can stay open." -ForegroundColor Yellow
 if ($Static) { Write-Host "Static mode: native dragon background, no animated shader." -ForegroundColor Cyan }
-else { Write-Host "Ctrl+Shift+F10 toggles the animated shader. Eye is lit at timer zero; lightning repeats within 6 seconds." -ForegroundColor Cyan }
-if (-not $Static -and -not $NoTypingEffects) { Write-Host "Green typing bolts enabled. Disable-DracoTypingEffects stops them in the current tab." -ForegroundColor Green }
+else { Write-Host "Ctrl+Shift+F10 toggles the selected animated shader." -ForegroundColor Cyan }
+if ($InputEnabled) { Write-Host "Green typing bolts enabled. Disable-DracoTypingEffects stops them in the current tab." -ForegroundColor Green }
 Write-Host "Settings: $SettingsPath | Font: $FontFace" -ForegroundColor DarkGray
 Write-Host "Backup: $Backup" -ForegroundColor DarkGray
+
+

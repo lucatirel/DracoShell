@@ -2,13 +2,22 @@
 
 | Component | Responsibility | Trust boundary |
 | --- | --- | --- |
-| `install.ps1`, `scripts/Draco.Setup.ps1` | Dependency checks, validated setup, backup and atomic writes | Reviewed local checkout and current-user files |
+| `install.ps1`, `scripts/Draco.Setup.ps1`, `scripts/Draco.Presets.ps1` | Dependency checks, validated setup, backup and atomic writes | Reviewed local checkout and current-user files |
 | `profile/draco-profile.ps1` | PSReadLine colors, local Oh My Posh initialization and prompt cache | Trusted installed prompt executable/config |
 | `profile/draco-input.ps1` | Preserve/delegate editor handlers; emit zero-argument events | Editor arguments are forwarded unchanged, never inspected for graphics |
 | `input/InputPulse.cs` | Bounded anonymous timing, asynchronous wakeup and fixed output marker | No input reads, character payloads, network or file logging |
 | `shaders/draco-storm.hlsl` | Decode fixed marker, draw cached effects and protect text | GPU receives the normal rendered Terminal texture |
 | `scripts/build-assets.py` | Generate deterministic storm/routes and pack PNG atlas | Optional local development tool |
 | `uninstall.ps1`, `CLEAN-RESET.cmd` | Remove DRACO loaders/settings/files; keep recovery copies | Same current-user paths and recorded settings target |
+
+## Preset selection
+
+The data-only `config/dragons.json` catalog selects a matching graphics pack.
+The public default is lineart, stored at the root for compatibility. Three other
+modern packs keep their authored atlases/shaders under `presets/`; three legacy
+ambient shaders use the public lineart body texture and disable the input bridge.
+Installation verifies pack hashes/geometry before active writes and records the
+selection in `install-state.json`. See [all packs](VARIANTS.md).
 
 ## Anonymous bridge
 
@@ -58,7 +67,10 @@ The breath origin and tangent use the forward deformation of the same mouth
 anchor, `(0.881, 0.357)`. A padded destination rectangle retains moving tips;
 out-of-sprite coordinates are rejected before atlas sampling.
 
-There is no additional texture, input event, animation thread or dependency.
+For lineart motion there is no additional texture, input event, animation thread
+or dependency. The armored pack instead uses a layered 4352 × 640 atlas and
+a bounded anonymous `Flight()` event. Flight runs only when that preset has
+motion and input effects enabled; it is disabled by `-NoDragonMotion`.
 `-NoDragonMotion` installs a separate content-addressed shader with a zero pose;
 the existing animated eye, storms and fire remain enabled. `-Static` still removes
 the shader entirely. Runtime GPU cost must be measured on the target machine;
@@ -90,3 +102,4 @@ rear lanes are blocked by the moving silhouette and front lanes pass over it.
 The split reuses existing samples and adds no texture or timer. Green typing
 uses a squared intensity core to suppress broad halos without changing the
 geometry, with a lower peak than the previous full-strength green effect.
+

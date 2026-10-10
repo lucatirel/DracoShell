@@ -37,14 +37,43 @@ Your prompt stays readable, with directory, Git and Python context.
 | **Resize or split** | The scene adjusts to each pane |
 | Get **work done** | A compact two-line Oh My Posh prompt keeps the useful context close |
 
+## Choose a dragon
+
+One installer provides seven presets; no Git branch switch or uninstall is needed.
+A bare install selects `lineart`, the cyan outline dragon shown in the demo.
+
+| `-Dragon` | Appearance and effects |
+| --- | --- |
+| `lineart` (default) | Cyan outline, gentle movement, thin lightning and Enter fire |
+| `public` | Earlier cyber dragon with a still body, lightning and fire |
+| `subtle` | Stylized dragon with gentle body, wing and tail movement |
+| `armored` | Layered armored dragon with flight and landing |
+| `legacy-v2`, `legacy-v3`, `legacy-fx` | Historical ambient effects using public lineart artwork; no typing/fire bridge |
+
+```powershell
+# List choices without changing your installation:
+powershell -NoProfile -File .\install.ps1 -ListDragons
+
+# Switch graphics, then open a new Windows PowerShell tab:
+powershell -NoProfile -ExecutionPolicy Bypass -File .\install.ps1 -Dragon subtle
+
+# Return to the public default:
+powershell -NoProfile -ExecutionPolicy Bypass -File .\install.ps1 -Dragon lineart
+```
+
+`-NoDragonMotion`, `-NoTypingEffects` and `-Static` can be combined with `-Dragon`.
+An install without `-Dragon` returns to `lineart`, including after another preset.
+[Pack details and adding a variant](docs/VARIANTS.md).
+
 ## Small by design
 
 **One cached graphics atlas. No process launched per keystroke.**
 
-The 3072 × 640 atlas is about **0.68 MiB on disk** and **7.5 MiB decoded**.
+The default lineart 3072 × 640 atlas is about **0.68 MiB on disk** and **7.5 MiB decoded**.
 Effects reuse that texture, notifications stay bounded, and the bridge timer
 stops when input effects finish. Choose full effects, ambient animation or a
-static background in the installer.
+static background in the installer. The armored pack uses a 4352 × 640 atlas
+(about 10.625 MiB decoded); each tab renders only its selected pack.
 
 The input bridge receives anonymous events, without reading characters or
 commands. No global keyboard hook, clipboard reads or input logging.
@@ -153,6 +182,7 @@ tabs use `-NoLogo`. Scripted launches and later command output are preserved.
 | `Enter` | One 900 ms breath |
 | Normal character insertion | Green pane-wide lightning |
 | `Ctrl+Shift+F10` | Toggle shader effects, if the chord is free |
+| `Test-DracoFlight` | Replay flight when `armored` is active with motion and input effects enabled |
 | `Test-DracoFireEffects` | Trigger one flame |
 | `Test-DracoTypingEffects` | Test the green lightning effect |
 | `Get-DracoTypingStatus` | Show counters and startup errors |
@@ -200,7 +230,10 @@ Creator support is optional; DracoShell has no paid features.
 ## Credits and license
 
 Built with **Windows Terminal**, **Oh My Posh**, **PSReadLine** and **Nerd Fonts**.
-The cyan dragon artwork was selected and supplied by the project owner.
+The default cyan dragon artwork was selected and supplied by the project owner.
+Other modern packs use separately generated project artwork. Legacy effects use
+the public cyan drawing; manufacturer artwork is not bundled. See per-pack notices.
 
 Released under the **[MIT license](LICENSE)**.
 [Artwork and asset notes](assets/README.md) · [Dependency notices](THIRD_PARTY_NOTICES.md).
+

@@ -1,6 +1,6 @@
 # User-selected cyan line-art dragon
 
-This branch uses the image supplied by the project owner on 2026-10-06:
+The default `lineart` preset uses the image supplied by the project owner on 2026-10-06:
 a cyan outline dragon on black, with a red eye. The runtime sprite is prepared
 from that image without redrawing it. Black becomes transparency, unused canvas
 is cropped and the drawing is centered on a square without stretching it.
@@ -36,3 +36,8 @@ blur or animation frame generation runs in the user's shell.
 
 Project assets use the MIT terms in [LICENSE](../LICENSE), to the extent of the
 project owner's rights. External fonts and software retain their own licenses.
+
+
+Alternative modern packs keep matching body/icon/atlas files under `presets/`.
+The three historical ambient shaders reuse this public body, rather than the
+manufacturer-derived crops. See [preset catalog](../docs/VARIANTS.md).

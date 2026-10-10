@@ -7,7 +7,8 @@ public static class DracoInputValidator {
     public static void UnmuteOutput() { Draco.InputPulse.OutputObserver = null; }
     public static void Validate() {
         if (typeof(Draco.InputPulse).GetMethod("Click").GetParameters().Length != 0 ||
-            typeof(Draco.InputPulse).GetMethod("Fire").GetParameters().Length != 0)
+            typeof(Draco.InputPulse).GetMethod("Fire").GetParameters().Length != 0 ||
+            typeof(Draco.InputPulse).GetMethod("Flight").GetParameters().Length != 0)
             throw new System.Exception("Effects API accepts input data");
         if (Draco.InputPulse.OnSequence != "\u001b[1;1;1;1;48;2;5;56;22$r" ||
             Draco.InputPulse.OffSequence != "\u001b[1;1;1;1;49$r")
@@ -86,7 +87,7 @@ public static class DracoInputValidator {
             if(!entered.WaitOne(2000)) throw new System.Exception("No background write to stall");
             caller = new System.Threading.Thread(delegate() {
                 var watch = System.Diagnostics.Stopwatch.StartNew();
-                Draco.InputPulse.Click(); Draco.InputPulse.Fire();
+                Draco.InputPulse.Click(); Draco.InputPulse.Fire(); Draco.InputPulse.Flight();
                 watch.Stop(); stalledCallMs = watch.ElapsedMilliseconds;
             });
             caller.Start();
@@ -97,7 +98,7 @@ public static class DracoInputValidator {
             Draco.InputPulse.Stop(); Draco.InputPulse.OutputObserver=null;
             entered.Dispose(); release.Dispose();
         }
-        System.Console.WriteLine("Click/Fire while graphics output is blocked: " + stalledCallMs + " ms: PASS");
+        System.Console.WriteLine("Click/Fire/Flight while graphics output is blocked: " + stalledCallMs + " ms: PASS");
         if (Draco.InputPulse.FlameStage(-1)!=-1 || Draco.InputPulse.FlameStage(0)!=0 ||
             Draco.InputPulse.FlameStage(899)!=19 || Draco.InputPulse.FlameStage(900)!=-1)
             throw new System.Exception("Fire duration unbounded");
@@ -119,6 +120,30 @@ public static class DracoInputValidator {
                 throw new System.Exception("Held Enter created a delayed fire queue");
         } finally {Draco.InputPulse.Stop(); Draco.InputPulse.SequenceObserver=null;}
         System.Console.WriteLine("Anonymous Enter fire, concurrent green signal, expiry and no fire backlog: PASS");
+        if(Draco.InputPulse.FlightStage(-1)!=-1 || Draco.InputPulse.FlightStage(0)!=0 ||
+           Draco.InputPulse.FlightStage(5499)!=109 || Draco.InputPulse.FlightStage(5500)!=-1)
+            throw new System.Exception("Flight duration is not bounded");
+        var flightWire=new System.Collections.Generic.List<string>();
+        Draco.InputPulse.SequenceObserver=delegate(string value){flightWire.Add(value);};
+        try {
+            Draco.InputPulse.Start(); Draco.InputPulse.Reset(); flightWire.Clear();
+            Draco.InputPulse.Flight(); Draco.InputPulse.Fire(); Draco.InputPulse.Click();
+            System.Threading.Thread.Sleep(5800);
+            if(!flightWire.Exists(delegate(string value){return value.Contains(";48;2;128;");}) ||
+               !flightWire.Exists(delegate(string value){return value.Contains(";56;8");}) ||
+               flightWire[flightWire.Count-1]!=Draco.InputPulse.OffSequence || flightWire.Count>145)
+                throw new System.Exception("Flight/typing/fire channels or flight expiry failed");
+            flightWire.Clear();
+            for(int i=0;i<200;i++) Draco.InputPulse.Flight();
+            System.Threading.Thread.Sleep(120);
+            Draco.InputPulse.Reset();
+            int stoppedCount=flightWire.Count;
+            System.Threading.Thread.Sleep(160);
+            if(flightWire.Count!=stoppedCount || flightWire[flightWire.Count-1]!=Draco.InputPulse.OffSequence)
+                throw new System.Exception("Reset did not cancel flight flood immediately");
+        } finally { Draco.InputPulse.Stop(); Draco.InputPulse.SequenceObserver=null; }
+        System.Console.WriteLine("Bounded flight, independent channels, expiry and immediate cancel: PASS");
+
     }
 }
 '@)
