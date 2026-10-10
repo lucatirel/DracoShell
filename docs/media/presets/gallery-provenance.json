@@ -1,0 +1,63 @@
+{
+  "font": "MesloLGM Nerd Font",
+  "renderer": "Windows Direct3D WARP",
+  "width": 1280,
+  "prompt": "Oh My Posh 31.4.1 / committed draco.omp.json",
+  "captures": [
+    {
+      "shaderHash": "DB8AC881EBB7DA593F81FA5DA6D41EF8A6A76E0283EF5303ECD5F79B6AE4AD6A",
+      "preset": "lineart",
+      "file": "terminal-lineart.png",
+      "imageHash": "2E0CDD1C5A5AC20EC17079F8580FB7408C123F687E3DD5A94AA3FA1DE2730370",
+      "captureSha256": "f476e8cee02def1b7c21e1763543de12ec7099362080e5ed20d49dbe8c4bf9d8"
+    },
+    {
+      "shaderHash": "6A8B8BECC578933A65518ADD305FEDB1AE401AF2F0FF7D72CF0523E25DAF9733",
+      "preset": "public",
+      "file": "terminal-public.png",
+      "imageHash": "020ECBE517D5DEBCB8163E7ADE425E8F812212FD5AD5A3E8B7D12C3D42494448",
+      "captureSha256": "5047232ff51cebecf0b4b8b3dc1e7917fb7e4dc639c005c1e0b339dac659dc84"
+    },
+    {
+      "shaderHash": "638C18FC450F88BBB6FE860AE7BD8C9C6B45F34544289E0F9C2D9A69E814BB8E",
+      "preset": "subtle",
+      "file": "terminal-subtle.png",
+      "imageHash": "432B43E47285A6EE0DB861B2E6AA9ADF7145DC604ABBB47F3F04465769536DAC",
+      "captureSha256": "4cff31403075daf647eff18588527e66e8776b5dfec6d408de4365c5c8f5a484"
+    },
+    {
+      "shaderHash": "13C3DCDE911035F933FD145D24EB996BF7523014EA7752FFCCF38277D1237801",
+      "preset": "armored",
+      "file": "terminal-armored.png",
+      "imageHash": "2EDF094AB2C0702779A0604405A341A428E08A00C4E0574E7D4B28032F9FAA0E",
+      "captureSha256": "0eab63e29b4cd88d27890a8275fa84b548ef9748902aacb89a41ee1d4f84eccc"
+    },
+    {
+      "shaderHash": "C47AC66D683AB8A3E4CE1E953EB3C4C25E6FA4182948253925A43FF5B7EA4996",
+      "preset": "legacy-v2",
+      "file": "terminal-legacy-v2.png",
+      "imageHash": "7946D6DE0A6D7D8DBB7D14B3B3F363D0636C8FF5560DBFB2DF1D173C938F93A3",
+      "captureSha256": "cc1f4eb9e2abca87ef147258e0c055a8a1d746e23945ea051d69a190321d1e62"
+    },
+    {
+      "shaderHash": "77379B387244E7F992DCE04362E8837738B5E5E68937E7624913BD86AC11F0AC",
+      "preset": "legacy-v3",
+      "file": "terminal-legacy-v3.png",
+      "imageHash": "7946D6DE0A6D7D8DBB7D14B3B3F363D0636C8FF5560DBFB2DF1D173C938F93A3",
+      "captureSha256": "8222e845bd25468ebd72dfea0560bbbfe803a447ea1b8f60497372847bf955c0"
+    },
+    {
+      "shaderHash": "D23143A416FE348E2346F1182D3160BBC218A1210DC74588CF055186CA050363",
+      "preset": "legacy-fx",
+      "file": "terminal-legacy-fx.png",
+      "imageHash": "7946D6DE0A6D7D8DBB7D14B3B3F363D0636C8FF5560DBFB2DF1D173C938F93A3",
+      "captureSha256": "71e92876d80a10dedb3a2ad0dc8e99ecfd7faefbfe520fed8ab7bce2501e9f96"
+    }
+  ],
+  "revision": "fdcf95950e4399bb1a93c922437cc3b5a1abebf0",
+  "height": 720,
+  "workflowRun": "https://github.com/lucatirel/DracoShell/actions/runs/38049380616",
+  "fontVersion": "Nerd Fonts v3.4.0",
+  "frameTimeSeconds": 0.205,
+  "activity": "Simulated typing and Enter fire for modern presets; ambient-only for legacy presets"
+}

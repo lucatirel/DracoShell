@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="docs/media/draco-demo.mp4"><img src="docs/media/draco-demo.gif" alt="DracoShell: a cyan dragon with lightning, green typing effects and fire on Enter" width="800"></a>
+  <a href="docs/media/presets/terminal-lineart.png"><img src="docs/media/presets/terminal-lineart.png" alt="DracoShell lineart default: actual shader, Oh My Posh prompt, Nerd Font and sample PowerShell commands" width="1000"></a>
 </p>
 
 <h1 align="center">DracoShell 🐉</h1>
@@ -25,7 +25,7 @@ feel alive. Ambient storms slip behind the wings or flash in front; typing adds
 thin green lightning, and Enter sends a short flame from the dragon's mouth.
 Your prompt stays readable, with directory, Git and Python context.
 
-<sub>The preview uses the actual shader rendered on Windows Direct3D WARP with simulated input. [Capture details](docs/media/README.md).</sub>
+<sub>Default: <code>lineart</code>. Terminal previews render the actual shader and real Oh My Posh output with Meslo Nerd Font; commands and activity are examples. Click any preview for full resolution. [Capture details](docs/media/README.md) · [Animated shader demo](docs/media/draco-demo.mp4).</sub>
 
 ## Meet your terminal dragon
 
@@ -64,6 +64,32 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\install.ps1 -Dragon linear
 `-NoDragonMotion`, `-NoTypingEffects` and `-Static` can be combined with `-Dragon`.
 An install without `-Dragon` returns to `lineart`, including after another preset.
 [Pack details and adding a variant](docs/VARIANTS.md).
+
+## Every dragon in a terminal
+
+The **lineart default** is shown above. These are the six other public presets,
+with the same prompt and sample session so you can compare their appearance.
+Click an image to view the full 1280 × 720 capture.
+
+| Public · still body, lightning and fire | Subtle · gentle body movement |
+| --- | --- |
+| [![Public dragon with Oh My Posh and PowerShell text](docs/media/presets/terminal-public.png)](docs/media/presets/terminal-public.png) | [![Subtle dragon with Oh My Posh and PowerShell text](docs/media/presets/terminal-subtle.png)](docs/media/presets/terminal-subtle.png) |
+| `-Dragon public` | `-Dragon subtle` |
+
+| Armored · layered body, flight and landing | Legacy v2 · ambient effects |
+| --- | --- |
+| [![Armored dragon with Oh My Posh and PowerShell text](docs/media/presets/terminal-armored.png)](docs/media/presets/terminal-armored.png) | [![Legacy v2 public dragon with Oh My Posh and PowerShell text](docs/media/presets/terminal-legacy-v2.png)](docs/media/presets/terminal-legacy-v2.png) |
+| `-Dragon armored` | `-Dragon legacy-v2` |
+
+| Legacy v3 · ambient effects | Legacy FX · experimental ambient effects |
+| --- | --- |
+| [![Legacy v3 public dragon with Oh My Posh and PowerShell text](docs/media/presets/terminal-legacy-v3.png)](docs/media/presets/terminal-legacy-v3.png) | [![Legacy FX public dragon with Oh My Posh and PowerShell text](docs/media/presets/terminal-legacy-fx.png)](docs/media/presets/terminal-legacy-fx.png) |
+| `-Dragon legacy-v3` | `-Dragon legacy-fx` |
+
+Legacy presets share the public cyan drawing and show their historical ambient
+styles; typing lightning and Enter fire are disabled for those three. A still
+preview cannot show movement: the [lineart video](docs/media/draco-demo.mp4)
+shows the animated default.
 
 ## Small by design
 
