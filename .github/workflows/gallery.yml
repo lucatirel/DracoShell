@@ -1,0 +1,43 @@
+name: Capture terminal gallery
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/capture-gallery.ps1'
+      - 'scripts/render-gallery.cpp'
+      - '.github/workflows/gallery.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  gallery:
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Compile documentation renderer
+        shell: cmd
+        run: |
+          for /f "usebackq tokens=*" %%i in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath`) do call "%%i\VC\Auxiliary\Build\vcvars64.bat"
+          cl /nologo /EHsc /std:c++17 scripts\render-gallery.cpp /Fe:"%RUNNER_TEMP%\draco-gallery.exe" /Fo:"%RUNNER_TEMP%\draco-gallery.obj" /link d3d11.lib d3dcompiler.lib windowscodecs.lib ole32.lib
+          if errorlevel 1 exit /b 1
+      - name: Render seven public presets with the actual prompt and Nerd Font
+        shell: powershell
+        run: |
+          $exe = Join-Path $env:RUNNER_TEMP 'oh-my-posh.exe'
+          Invoke-WebRequest 'https://github.com/JanDeDobbeleer/oh-my-posh/releases/download/v31.4.1/posh-windows-amd64.exe' -OutFile $exe -UseBasicParsing
+          if ((Get-FileHash $exe -Algorithm SHA256).Hash -ne '18aa1640bcbb2ad295ef99045c6862862d696c4303d81fe9a6c82706e079a971') { throw 'Oh My Posh checksum mismatch' }
+          $font = Join-Path $env:RUNNER_TEMP 'MesloLGMNerdFont-Regular.ttf'
+          Invoke-WebRequest 'https://raw.githubusercontent.com/ryanoasis/nerd-fonts/v3.4.0/patched-fonts/Meslo/M/Regular/MesloLGMNerdFont-Regular.ttf' -OutFile $font -UseBasicParsing
+          if ((Get-FileHash $font -Algorithm SHA256).Hash -ne 'dcf9da8c0620523398fbbaba55d41f8e37e09048649bae087f4fb07bcc583b77') { throw 'Nerd Font checksum mismatch' }
+          .\scripts\capture-gallery.ps1 -Executable $exe -Renderer (Join-Path $env:RUNNER_TEMP 'draco-gallery.exe') -Font $font -Output (Join-Path $env:RUNNER_TEMP 'gallery')
+      - name: Save terminal gallery
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: draco-terminal-gallery
+          path: ${{ runner.temp }}/gallery
+          retention-days: 7
+          if-no-files-found: error
+
