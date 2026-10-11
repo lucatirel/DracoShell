@@ -14,7 +14,7 @@
 
 The data-only `config/dragons.json` catalog selects a matching graphics pack.
 The public default is lineart, stored at the root for compatibility. Three other
-modern packs keep their authored atlases/shaders under `presets/`; three legacy
+modern packs keep their authored atlases/shaders under `presets/`; one centered legacy
 ambient shaders use the public lineart body texture and disable the input bridge.
 Installation verifies pack hashes/geometry before active writes and records the
 selection in `install-state.json`. See [all packs](VARIANTS.md).

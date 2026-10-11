@@ -39,7 +39,7 @@ Your prompt stays readable, with directory, Git and Python context.
 
 ## Choose a dragon
 
-One installer provides seven presets; no Git branch switch or uninstall is needed.
+One installer provides five presets; no Git branch switch or uninstall is needed.
 A bare install selects `lineart`, the cyan outline dragon shown in the demo.
 
 | `-Dragon` | Appearance and effects |
@@ -48,7 +48,7 @@ A bare install selects `lineart`, the cyan outline dragon shown in the demo.
 | `public` | Earlier cyber dragon with a still body, lightning and fire |
 | `subtle` | Stylized dragon with gentle body, wing and tail movement |
 | `armored` | Layered armored dragon with flight and landing |
-| `legacy-v2`, `legacy-v3`, `legacy-fx` | Historical ambient effects using public lineart artwork; no typing/fire bridge |
+| `legacy` | Centered public lineart dragon with cyan/violet/magenta ambient lightning; no typing/fire bridge |
 
 ```powershell
 # List choices without changing your installation:
@@ -67,28 +67,23 @@ An install without `-Dragon` returns to `lineart`, including after another prese
 
 ## Every dragon in a terminal
 
-The **lineart default** is shown above. These are the six other public presets,
-with the same prompt and sample session so you can compare their appearance.
-Click an image to view the full 1280 × 720 capture.
+The **lineart default** is shown above. These are the four other available presets.
+The existing historical previews below have not yet been regenerated for the centered
+legacy shader; a new verified capture is needed before publishing its screenshot.
 
 | Public · still body, lightning and fire | Subtle · gentle body movement |
 | --- | --- |
 | [![Public dragon with Oh My Posh and PowerShell text](docs/media/presets/terminal-public.png)](docs/media/presets/terminal-public.png) | [![Subtle dragon with Oh My Posh and PowerShell text](docs/media/presets/terminal-subtle.png)](docs/media/presets/terminal-subtle.png) |
 | `-Dragon public` | `-Dragon subtle` |
 
-| Armored · layered body, flight and landing | Legacy v2 · ambient effects |
-| --- | --- |
-| [![Armored dragon with Oh My Posh and PowerShell text](docs/media/presets/terminal-armored.png)](docs/media/presets/terminal-armored.png) | [![Legacy v2 public dragon with Oh My Posh and PowerShell text](docs/media/presets/terminal-legacy-v2.png)](docs/media/presets/terminal-legacy-v2.png) |
-| `-Dragon armored` | `-Dragon legacy-v2` |
+| Armored · layered body, flight and landing |
+| --- |
+| [![Armored dragon with Oh My Posh and PowerShell text](docs/media/presets/terminal-armored.png)](docs/media/presets/terminal-armored.png) |
+| `-Dragon armored` |
 
-| Legacy v3 · ambient effects | Legacy FX · experimental ambient effects |
-| --- | --- |
-| [![Legacy v3 public dragon with Oh My Posh and PowerShell text](docs/media/presets/terminal-legacy-v3.png)](docs/media/presets/terminal-legacy-v3.png) | [![Legacy FX public dragon with Oh My Posh and PowerShell text](docs/media/presets/terminal-legacy-fx.png)](docs/media/presets/terminal-legacy-fx.png) |
-| `-Dragon legacy-v3` | `-Dragon legacy-fx` |
-
-Legacy presets share the public cyan drawing and show their historical ambient
-styles; typing lightning and Enter fire are disabled for those three. A still
-preview cannot show movement: the [lineart video](docs/media/draco-demo.mp4)
+Select the centered ambient preset with `-Dragon legacy`. It has no
+keystroke-triggered lightning or Enter fire; the modern packs retain those effects.
+A still preview cannot show movement: the [lineart video](docs/media/draco-demo.mp4)
 shows the animated default.
 
 ## Small by design
@@ -257,8 +252,7 @@ Creator support is optional; DracoShell has no paid features.
 
 Built with **Windows Terminal**, **Oh My Posh**, **PSReadLine** and **Nerd Fonts**.
 The default cyan dragon artwork was selected and supplied by the project owner.
-Other modern packs use separately generated project artwork. Legacy effects use
-the public cyan drawing; manufacturer artwork is not bundled. See per-pack notices.
+Other modern packs use separately generated project artwork. The centered legacy preset uses the public cyan drawing; manufacturer artwork is not bundled. See per-pack notices.
 
 Released under the **[MIT license](LICENSE)**.
 [Artwork and asset notes](assets/README.md) · [Dependency notices](THIRD_PARTY_NOTICES.md).

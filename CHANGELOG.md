@@ -2,10 +2,10 @@
 
 ## Configurable public presets — 2026-10-10
 
-- Add seven graphics presets through `-Dragon` and `-ListDragons`, with `lineart` as the public default.
+- Add five graphics presets through `-Dragon` and `-ListDragons`, with `lineart` as the public default.
 - Share the safe installer, prompt and bounded anonymous input runtime; retain `-Static`, `-NoTypingEffects` and `-NoDragonMotion`.
 - Restore public, subtle and armored packs with their matching assets, shaders and render checks; enable guarded armored flight.
-- Adapt the three historical ambient shaders to the public cyan drawing, excluding manufacturer artwork and private Git history.
+- Adapt the historical ambient FX shader to the public cyan drawing, excluding manufacturer artwork and private Git history.
 - Test every preset installation and transitions, plus public asset/history boundaries.
 
 

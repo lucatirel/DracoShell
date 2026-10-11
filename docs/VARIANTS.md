@@ -1,24 +1,20 @@
 # Configurable dragon packs
 
-One installer, prompt and anonymous input runtime serve seven public presets.
-`lineart` is the default on every bare install and retains the existing public
-body, icon, atlas, shader and demo. The original manufacturer artwork is excluded.
+One installer, prompt and anonymous input runtime serve five public presets.
+`lineart` remains the default. The manufacturer artwork is excluded.
 
 | `-Dragon` | Artwork / behavior | Texture |
 | --- | --- | --- |
-| `lineart` | Cyan outline, subtle movement, narrow front/rear lightning and Enter fire | 3072 × 640 atlas |
-| `public` | Earlier generated cyber dragon; still body with lightning/fire | 3072 × 640 atlas |
-| `subtle` | Generated dragon with gentle body/wing/tail motion | 3072 × 640 atlas |
-| `armored` | Generated layered body/wings with flight and landing | 4352 × 640 atlas |
-| `legacy-v2` | Historical v2 ambient shader with the public cyan drawing | 640 × 640 body |
-| `legacy-v3` | Historical v3 ambient shader with the public cyan drawing | 640 × 640 body |
-| `legacy-fx` | Historical experimental ambient shader with the public cyan drawing | 640 × 640 body |
+| `lineart` | Cyan outline, subtle motion, front/rear lightning and Enter fire | 3072 × 640 atlas |
+| `public` | Still-body cyber dragon with lightning/fire | 3072 × 640 atlas |
+| `subtle` | Gentle body/wing/tail motion | 3072 × 640 atlas |
+| `armored` | Flight and landing | 4352 × 640 atlas |
+| `legacy` | Centered cyan drawing and multi-color ambient lightning | 640 × 640 body |
 
-The three legacy packs reuse the public artwork rather than their historical
-manufacturer-derived crops. They are adaptations of the old ambient effects,
-not exact restorations of those images. v2/FX eye anchors follow the cyan drawing.
-Their shaders do not decode the typing/fire control cell, so the installer
-disables the input bridge. All packs use the current shared prompt and setup/reset.
+The three former legacy variations (`legacy-v2`, `legacy-v3`,
+`legacy-fx`) were consolidated into one centered, ambient-only pack based on
+FX. The old assets and shaders are recoverable in Git history, but are no longer
+installable choices. Input-triggered lightning/fire are disabled for `legacy`.
 
 ```powershell
 powershell -NoProfile -File .\install.ps1 -ListDragons

@@ -5,7 +5,8 @@ $RepoRoot = Split-Path $PSScriptRoot -Parent
 . (Join-Path $RepoRoot 'scripts/Draco.Presets.ps1')
 $Catalog = Get-Content (Join-Path $RepoRoot 'config/dragons.json') -Raw | ConvertFrom-Json
 $Names = @($Catalog.presets.PSObject.Properties.Name)
-if ($Names.Count -ne 5 -or 'legacy' -cnotin $Names -or @('legacy-v2','legacy-v3','legacy-fx') | Where-Object { $_ -cin $Names }) { throw 'Legacy preset consolidation failed' }
+if ($Names.Count -ne 5 -or 'legacy' -cnotin $Names) { throw 'Legacy preset consolidation failed' }
+foreach ($Old in @('legacy-v2','legacy-v3','legacy-fx')) { if ($Old -cin $Names) { throw "Old preset remains registered: $Old" } }
 foreach ($Old in @('legacy-v2','legacy-v3','legacy-fx')) { if (Test-Path (Join-Path $RepoRoot "presets/$Old")) { throw "Obsolete preset directory: $Old" } }
 $LegacyShader = Get-Content (Join-Path $RepoRoot 'presets/legacy/shaders/draco-storm.hlsl') -Raw
 if ($LegacyShader -notmatch 'dragonLeft\s*=\s*0\.5f\s*-\s*dragonWidth\s*\*\s*0\.5f' -or $LegacyShader -match 'dragonRight\s*=') { throw 'Legacy dragon is not centered' }
