@@ -78,7 +78,7 @@
           "type": "git",
           "style": "plain",
           "foreground": "#7DF3D1",
-          "min_width": 100,
+          "min_width": 40,
           "template": "<#56627A>  </> {{ .HEAD | trunc 22 }}{{ if .Working.Changed }}<#F8D57E> ●</>{{ end }}",
           "options": {
             "branch_icon": "",

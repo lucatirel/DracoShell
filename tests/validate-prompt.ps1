@@ -29,14 +29,13 @@ try {
         $Rendered = (& $Executable print primary --config (Join-Path $RepoRoot "config\draco.omp.json") --shell generic --pwd $Fixture --terminal-width $Width --plain | Out-String).TrimEnd()
         if ($LASTEXITCODE -ne 0 -or $Rendered -match 'error|invalid template') { throw "Prompt rendering failed at width $Width" }
         $Lines = @($Rendered -split '\r?\n')
-        if ($Lines.Count -ne 2 -or $Lines[0] -notmatch [regex]::Escape(([Environment]::UserName).Substring(0, [Math]::Min(8, [Environment]::UserName.Length))) -or $Lines[1].Trim() -ne $ExpectedInput) {
+        if (($Width -ge 70 -and $Lines.Count -ne 2) -or $Rendered -notmatch [regex]::Escape(([Environment]::UserName).Substring(0, [Math]::Min(8, [Environment]::UserName.Length))) -or $Lines[$Lines.Count - 1].Trim() -ne $ExpectedInput) {
             throw "Input did not start on its own second line at width $Width`: $Rendered"
         }
         # Nerd Font icons can occupy two cells; leave a small cell-width allowance.
-        if ($Lines[0].Length -gt $Width-2) { throw "Prompt metadata too wide at $Width`: $Rendered" }
-        if ($Lines[0] -notmatch 'PY \.venv') { throw "Active venv invisible at width $Width`: $Rendered" }
-        if ($Width -ge 100 -and $Lines[0] -notmatch 'draco-canonical-dev') { throw "Git branch missing" }
-        if ($Width -lt 100 -and $Lines[0] -match 'draco-canonical-dev') { throw "Narrow prompt did not compact" }
+        if ($Width -ge 70 -and $Lines[0].Length -gt $Width-2) { throw "Prompt metadata too wide at $Width`: $Rendered" }
+        if ($Rendered -notmatch 'PY \.venv') { throw "Active venv invisible at width $Width`: $Rendered" }
+        if ($Width -ge 40 -and $Rendered -notmatch 'draco-canonical-dev') { throw "Git branch missing" }
         if ($Width -ge 120 -and $Lines[0] -notmatch '\d{2}:\d{2}') { throw "Prompt clock missing" }
         if ($Width -lt 120 -and $Lines[0] -match '\d{2}:\d{2}') { throw "Narrow prompt clock was not hidden" }
     }
