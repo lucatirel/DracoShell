@@ -58,7 +58,7 @@
       "root": "presets/armored",
       "label": "Armored dragon with flight and landing"
     },
-    "legacy-v2": {
+    "legacy": {
       "staticImage": "assets/draco-watermark.png",
       "icon": null,
       "image": "assets/draco-watermark.png",
@@ -69,36 +69,8 @@
       "inputEffects": false,
       "motion": false,
       "flight": false,
-      "root": "presets/legacy-v2",
-      "label": "Historical v2 ambient effects with public lineart artwork"
-    },
-    "legacy-v3": {
-      "staticImage": "assets/draco-watermark.png",
-      "icon": null,
-      "image": "assets/draco-watermark.png",
-      "shader": "shaders/draco-storm.hlsl",
-      "manifest": "assets/manifest.json",
-      "imageWidth": 0,
-      "imageHeight": 0,
-      "inputEffects": false,
-      "motion": false,
-      "flight": false,
-      "root": "presets/legacy-v3",
-      "label": "Historical v3 ambient effects with public lineart artwork"
-    },
-    "legacy-fx": {
-      "staticImage": "assets/draco-watermark.png",
-      "icon": null,
-      "image": "assets/draco-watermark.png",
-      "shader": "shaders/draco-storm.hlsl",
-      "manifest": "assets/manifest.json",
-      "imageWidth": 0,
-      "imageHeight": 0,
-      "inputEffects": false,
-      "motion": false,
-      "flight": false,
-      "root": "presets/legacy-fx",
-      "label": "Historical experimental ambient effects with public lineart artwork"
+      "root": "presets/legacy",
+      "label": "Centered public lineart with classic cyan/violet/magenta ambient lightning"
     }
   }
 }

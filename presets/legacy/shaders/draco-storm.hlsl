@@ -81,19 +81,13 @@ float4 main(PSInput pin) : SV_TARGET
 
     // --------------------------------------------------------
     // RESPONSIVE DRAGON
-    // Same visual scale around 16:9, adaptive on resize.
+    // Center the square watermark at its native aspect ratio on any pane.
     // --------------------------------------------------------
     float viewportAspect = Resolution.x / max(Resolution.y, 1.0f);
-    float refAspect = 16.0f / 9.0f;
-
-    float dragonTop = 0.090f;
-    float dragonHeight = 0.820f;
-
-    float dragonWidth = 0.365f * (refAspect / max(viewportAspect, 0.70f));
-    dragonWidth = clamp(dragonWidth, 0.245f, 0.500f);
-
-    float dragonRight = 0.985f;
-    float dragonLeft = dragonRight - dragonWidth;
+    float dragonWidth = min(0.82f / max(viewportAspect, 0.10f), 0.54f);
+    float dragonHeight = dragonWidth * viewportAspect;
+    float dragonTop = 0.5f - dragonHeight * 0.5f;
+    float dragonLeft = 0.5f - dragonWidth * 0.5f;
 
     float2 dragonUV;
     dragonUV.x = (uv.x - dragonLeft) / dragonWidth;
@@ -148,9 +142,11 @@ float4 main(PSInput pin) : SV_TARGET
     // FAST STORM
     // Continuous bolts, anchored to dragon, multi-colour flashes.
     // --------------------------------------------------------
-    float stormLeft = max(0.0f, dragonLeft - dragonWidth * 0.22f);
-    float rightMask =
-        smoothstep(stormLeft, dragonLeft + dragonWidth * 0.18f, uv.x);
+    float stormLeft = max(0.0f, dragonLeft - dragonWidth * 0.25f);
+    float stormRight = min(1.0f, dragonLeft + dragonWidth * 1.25f);
+    float stormMask =
+        smoothstep(stormLeft, dragonLeft + dragonWidth * 0.12f, uv.x) *
+        (1.0f - smoothstep(dragonLeft + dragonWidth * 0.88f, stormRight, uv.x));
 
     float x1 = dragonLeft + dragonWidth * 0.64f;
     float x2 = dragonLeft + dragonWidth * 0.84f;
@@ -210,28 +206,28 @@ float4 main(PSInput pin) : SV_TARGET
         float3(0.08f, 0.68f, 1.00f) *
         cyanLightning *
         0.82f *
-        rightMask *
+        stormMask *
         darkMask;
 
     terminal.rgb +=
         float3(0.52f, 0.25f, 1.00f) *
         violetLightning *
         0.68f *
-        rightMask *
+        stormMask *
         darkMask;
 
     terminal.rgb +=
         float3(0.18f, 0.36f, 1.00f) *
         blueLightning *
         0.78f *
-        rightMask *
+        stormMask *
         darkMask;
 
     terminal.rgb +=
         float3(0.90f, 0.20f, 0.82f) *
         magentaLightning *
         0.54f *
-        rightMask *
+        stormMask *
         darkMask;
 
     float relief =
@@ -244,7 +240,7 @@ float4 main(PSInput pin) : SV_TARGET
         float3(0.45f, 0.70f, 1.00f) *
         relief *
         0.10f *
-        rightMask *
+        stormMask *
         darkMask;
 
     float globalFlash =
@@ -254,7 +250,7 @@ float4 main(PSInput pin) : SV_TARGET
     terminal.rgb +=
         float3(0.06f, 0.15f, 0.40f) *
         globalFlash *
-        rightMask *
+        stormMask *
         darkMask;
 
     return float4(saturate(terminal.rgb), terminal.a);

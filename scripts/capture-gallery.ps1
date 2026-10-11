@@ -116,10 +116,10 @@ try {
         finally { $Check.Dispose() }
         $Captures+=@{preset=$Name;file=[IO.Path]::GetFileName($Path);shaderHash=(Get-FileHash $Preset.shaderPath).Hash;imageHash=(Get-FileHash $Preset.imagePath).Hash}
     }
-    if ($Captures.Count -ne 7) { throw 'Incomplete public gallery' }
+    if ($Captures.Count -ne 5) { throw 'Incomplete public gallery' }
     @{revision=$env:GITHUB_SHA;renderer='Windows Direct3D WARP';prompt='Oh My Posh 31.4.1 / committed draco.omp.json';font='MesloLGM Nerd Font';width=1280;height=720;captures=$Captures} |
         ConvertTo-Json -Depth 8 | Set-Content (Join-Path $Output 'gallery-provenance.json') -Encoding UTF8
-    Write-Host 'Seven actual shader captures with real Oh My Posh glyphs: PASS'
+    Write-Host 'Five actual shader captures with real Oh My Posh glyphs: PASS'
 } finally {
     $env:VIRTUAL_ENV=$SavedVenv
     [Console]::OutputEncoding=$SavedEncoding

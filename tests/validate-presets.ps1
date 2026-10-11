@@ -4,6 +4,11 @@ $RepoRoot = Split-Path $PSScriptRoot -Parent
 . (Join-Path $RepoRoot 'tests/validate.ps1') -SkipInstaller
 . (Join-Path $RepoRoot 'scripts/Draco.Presets.ps1')
 $Catalog = Get-Content (Join-Path $RepoRoot 'config/dragons.json') -Raw | ConvertFrom-Json
+$Names = @($Catalog.presets.PSObject.Properties.Name)
+if ($Names.Count -ne 5 -or 'legacy' -cnotin $Names -or @('legacy-v2','legacy-v3','legacy-fx') | Where-Object { $_ -cin $Names }) { throw 'Legacy preset consolidation failed' }
+foreach ($Old in @('legacy-v2','legacy-v3','legacy-fx')) { if (Test-Path (Join-Path $RepoRoot "presets/$Old")) { throw "Obsolete preset directory: $Old" } }
+$LegacyShader = Get-Content (Join-Path $RepoRoot 'presets/legacy/shaders/draco-storm.hlsl') -Raw
+if ($LegacyShader -notmatch 'dragonLeft\s*=\s*0\.5f\s*-\s*dragonWidth\s*\*\s*0\.5f' -or $LegacyShader -match 'dragonRight\s*=') { throw 'Legacy dragon is not centered' }
 $Fixture = Join-Path ([IO.Path]::GetTempPath()) ([Guid]::NewGuid().ToString())
 $SavedUser = $env:USERPROFILE; $SavedLocal = $env:LOCALAPPDATA; $SavedProfile = $PROFILE
 try {
@@ -67,7 +72,7 @@ try {
     & (Join-Path $RepoRoot 'uninstall.ps1')
     if (@((Get-Content $Settings -Raw | ConvertFrom-Json).profiles.list).Count -ne 1 -or
         (Test-Path (Join-Path $Fixture '.draco-terminal/input-effects.json'))) { throw 'Reset left preset runtime active' }
-    Write-Host 'All seven public packs, motion/static transitions, lineart default and rejection checks: PASS'
+    Write-Host 'All five public packs, motion/static transitions, lineart default and rejection checks: PASS'
 } finally {
     $env:USERPROFILE = $SavedUser; $env:LOCALAPPDATA = $SavedLocal; $script:PROFILE = $SavedProfile
     if (Test-Path $Fixture) { Remove-Item $Fixture -Recurse -Force }
