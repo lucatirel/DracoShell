@@ -67,24 +67,21 @@ An install without `-Dragon` returns to `lineart`, including after another prese
 
 ## Every dragon in a terminal
 
-The **lineart default** is shown above. These are the four other available presets.
-The existing historical previews below have not yet been regenerated for the centered
-legacy shader; a new verified capture is needed before publishing its screenshot.
+The **lineart default** is shown above. The four remaining presets are
+arranged side by side for easy comparison. Screenshots use actual shader
+rendering and the same Oh My Posh sample session.
 
 | Public · still body, lightning and fire | Subtle · gentle body movement |
 | --- | --- |
-| [![Public dragon with Oh My Posh and PowerShell text](docs/media/presets/terminal-public.png)](docs/media/presets/terminal-public.png) | [![Subtle dragon with Oh My Posh and PowerShell text](docs/media/presets/terminal-subtle.png)](docs/media/presets/terminal-subtle.png) |
+| [![Public dragon with Oh My Posh prompt](docs/media/presets/terminal-public.png)](docs/media/presets/terminal-public.png) | [![Subtle dragon with Oh My Posh prompt](docs/media/presets/terminal-subtle.png)](docs/media/presets/terminal-subtle.png) |
 | `-Dragon public` | `-Dragon subtle` |
+| **Armored · flight and landing** | **Legacy · centered ambient lightning** |
+| [![Armored dragon with Oh My Posh prompt](docs/media/presets/terminal-armored.png)](docs/media/presets/terminal-armored.png) | [Legacy preview (verified Windows gallery artifact)](https://github.com/lucatirel/DracoShell/actions/runs/38185192857) |
+| `-Dragon armored` | `-Dragon legacy` |
 
-| Armored · layered body, flight and landing |
-| --- |
-| [![Armored dragon with Oh My Posh and PowerShell text](docs/media/presets/terminal-armored.png)](docs/media/presets/terminal-armored.png) |
-| `-Dragon armored` |
-
-Select the centered ambient preset with `-Dragon legacy`. It has no
-keystroke-triggered lightning or Enter fire; the modern packs retain those effects.
-A still preview cannot show movement: the [lineart video](docs/media/draco-demo.mp4)
-shows the animated default.
+The Legacy preset has no typing-triggered lightning or Enter fire.
+The Windows gallery artifact includes its new centered screenshot. The
+[animated lineart demo](docs/media/draco-demo.mp4) shows the default in motion.
 
 ## Small by design
 
