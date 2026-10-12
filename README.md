@@ -76,7 +76,7 @@ rendering and the same Oh My Posh sample session.
 | [![Public dragon with Oh My Posh prompt](docs/media/presets/terminal-public.png)](docs/media/presets/terminal-public.png) | [![Subtle dragon with Oh My Posh prompt](docs/media/presets/terminal-subtle.png)](docs/media/presets/terminal-subtle.png) |
 | `-Dragon public` | `-Dragon subtle` |
 | **Armored · flight and landing** | **Legacy · centered ambient lightning** |
-| [![Armored dragon with Oh My Posh prompt](docs/media/presets/terminal-armored.png)](docs/media/presets/terminal-armored.png) | [Legacy preview (verified Windows gallery artifact)](https://github.com/lucatirel/DracoShell/actions/runs/38185192857) |
+| [![Armored dragon with Oh My Posh prompt](docs/media/presets/terminal-armored.png)](docs/media/presets/terminal-armored.png) | [![Legacy dragon centered with Oh My Posh prompt](docs/media/presets/terminal-legacy.png)](docs/media/presets/terminal-legacy.png) |
 | `-Dragon armored` | `-Dragon legacy` |
 
 The Legacy preset has no typing-triggered lightning or Enter fire.
